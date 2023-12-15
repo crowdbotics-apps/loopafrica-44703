@@ -1,6 +1,6 @@
 import axios from "axios"
 const silentseaAPI = axios.create({
-  baseURL: "https://silent-sea-44703.botics.co",
+  baseURL: "https://loopafrica-44703.botics.co",
   headers: { Accept: "application/json", "Content-Type": "application/json" }
 })
 function api_docs_schema_retrieve(payload) {
