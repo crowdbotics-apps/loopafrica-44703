@@ -2,6 +2,10 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+import os
+
+def get_upload_path(instance, filename):
+    return os.path.join('images', 'avatars', str(instance.pk), filename)
 
 
 class User(AbstractUser):
@@ -20,7 +24,21 @@ class User(AbstractUser):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
+    GENDER_CHOICES= [
+        ('Male', 'male'),
+        ('Female', 'female'),
+        ('others', 'others'),
+    ]
     name = models.CharField(_("Name of User"), blank=True, null=True, max_length=255)
+    full_name = models.CharField(max_length=255, null=True, blank=True)
+    first_name = models.CharField(max_length=255, null=True, blank=True, default=None)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    gender = models.CharField(max_length=255, null=True, blank=True, choices=GENDER_CHOICES)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    avatar = models.ImageField(upload_to=get_upload_path, blank=True, null=True,)
+    linkedin = models.CharField(max_length=255, null=True, blank=True)
 
-    def get_absolute_url(self):
-        return reverse("users:detail", kwargs={"username": self.username})
+
+def get_absolute_url(self):
+    return reverse("users:detail", kwargs={"username": self.username})

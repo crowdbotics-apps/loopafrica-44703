@@ -53,6 +53,9 @@ except (DefaultCredentialsError, PermissionDenied):
 SECRET_KEY = env.str("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("HOST", default=["*"])
+ALLOWED_HOSTS += ['localhost', '127.0.0.1', 'localhost:8000']
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_ALL_ORIGINS = True
 SITE_ID = 1
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -77,8 +80,10 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
+    # 'dj_rest_auth',
+    # 'dj_rest_auth.registration',
+    'rest_auth',
+    'rest_auth.registration',
     'bootstrap4',
     'allauth',
     'allauth.account',
@@ -88,16 +93,19 @@ THIRD_PARTY_APPS = [
     'drf_spectacular',
     'storages',
     'import_export',
+    'corsheaders',
 ]
 MODULES_APPS = get_modules()
 
-INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS + MODULES_APPS
+#INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS + MODULES_APPS
+INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -202,15 +210,29 @@ SOCIALACCOUNT_ADAPTER = "users.adapters.SocialAccountAdapter"
 ACCOUNT_ALLOW_REGISTRATION = env.bool("ACCOUNT_ALLOW_REGISTRATION", True)
 SOCIALACCOUNT_ALLOW_REGISTRATION = env.bool("SOCIALACCOUNT_ALLOW_REGISTRATION", True)
 
-REST_AUTH = {
+# REST_AUTH = {
+#     # Replace password reset serializer to fix 500 error
+#     "PASSWORD_RESET_SERIALIZER": "home.api.v1.serializers.PasswordSerializer",
+#     # Use custom serializer that has no username and matches web signup
+#     "REGISTER_SERIALIZER": "home.api.v1.serializers.SignupSerializer",
+# }
+
+REST_AUTH_SERIALIZERS = {
     # Replace password reset serializer to fix 500 error
     "PASSWORD_RESET_SERIALIZER": "home.api.v1.serializers.PasswordSerializer",
+    "USER_DETAILS_SERIALIZER": "home.api.v1.serializers.UserDetailSerializer",
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
     # Use custom serializer that has no username and matches web signup
     "REGISTER_SERIALIZER": "home.api.v1.serializers.SignupSerializer",
 }
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+    )
 }
 
 # Custom user model
@@ -254,7 +276,7 @@ SPECTACULAR_SETTINGS = {
         "persistAuthorization": True,
         "displayOperationId": True,
     },
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],\
+    #"SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],\
     "TITLE": "silent_sea_44703 API",
     "DESCRIPTION": "API documentation for silent_sea_44703 App",
     "VERSION": "v1",
