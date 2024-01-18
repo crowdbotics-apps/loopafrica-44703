@@ -11,7 +11,7 @@ from rest_auth.serializers import PasswordResetSerializer
 from django.utils.encoding import force_bytes, force_text  
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode  
 from django.contrib.auth.tokens import PasswordResetTokenGenerator,default_token_generator
-
+#from silent_sea_44703.utils import Util
 from django.template.loader import render_to_string
 import os
 import requests
@@ -265,3 +265,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
                 return signed_url
             else:
                 return None
+            
+# class ProfessionalExperienceSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=ProfessionalExperience
+#         fields=['desired_job_role', 'preferred_industry', 'experience', 'job_location' , 'career_goals','Remote','Resume']                        
