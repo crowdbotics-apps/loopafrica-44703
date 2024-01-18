@@ -7,6 +7,9 @@ import os
 def get_upload_path(instance, filename):
     return os.path.join('images', 'avatars', str(instance.pk), filename)
 
+def get_upload_profile_pic(instance, filename):
+    return os.path.join('images', 'profile_pic', str(instance.pk), filename)
+
 
 class User(AbstractUser):
     # WARNING!
@@ -37,6 +40,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=255, null=True, blank=True, choices=GENDER_CHOICES)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     avatar = models.ImageField(upload_to=get_upload_path, blank=True, null=True,)
+    profile_picture = models.ImageField(upload_to=get_upload_profile_pic, null=True, blank=True)
     linkedin = models.CharField(max_length=255, null=True, blank=True)
 
 
