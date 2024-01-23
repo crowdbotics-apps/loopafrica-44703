@@ -267,7 +267,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     avatar_signed_url = serializers.SerializerMethodField()
     class Meta:
         model=User
-        fields=['full_name', 'gender', 'email', 'phone_number','linkedin', 'avatar', 'avatar_signed_url']
+        fields=['full_name', 'gender', 'email', 'phone_number', 'avatar', 'avatar_signed_url']
  
     def get_avatar_signed_url(self, obj):
             avatar_url = obj.avatar.url if obj.avatar else None  # Assuming 'avatar' is a CharField containing the full URL
@@ -289,3 +289,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             else:
                 return None
             
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'profile_picture']
