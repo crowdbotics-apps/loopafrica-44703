@@ -5,13 +5,16 @@ from rest_framework.response import Response
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from users.models import User
 
 
 from home.api.v1.serializers import (
     SignupSerializer,
     UserSerializer,
-    #UserProPicSerializer,
+    UserProfileUpdateSerializer,
 )
 
 
@@ -35,9 +38,11 @@ class LoginViewSet(ViewSet):
         user_serializer = UserSerializer(user)
         return Response({"token": token.key, "user": user_serializer.data})
 
-class UserProfileUpdateView(RetrieveUpdateAPIView):
+class UserProfileUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserProfileUpdateSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
     def update(self, request, *args, **kwargs):
