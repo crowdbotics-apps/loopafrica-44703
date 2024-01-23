@@ -19,7 +19,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-#from users.models import ProfessionalExperience
+from users.models import User, UserProfile, PatientInfo
 
 import os
 import boto3
@@ -33,13 +33,25 @@ env.read_env(env_file)
 
 User = get_user_model()
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['user_type']
 
+class PatientInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientInfo
+        fields = ['patient_id', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'support_needed']
+        
 class SignupSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(style={'input_type':'password'}, write_only=True)
-    
+    confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    profile = UserProfileSerializer()
+    patient_info = PatientInfoSerializer(required=False)
+
     class Meta:
         model = User
-        fields = ('id', 'name', 'email', 'password','confirm_password')
+        fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'profile', 'patient_info', 'password', 'confirm_password')
+        
         extra_kwargs = {
             'password': {
                 'write_only': True,
@@ -53,31 +65,25 @@ class SignupSerializer(serializers.ModelSerializer):
             }
         }
 
-    def _get_request(self):
-        request = self.context.get('request')
-        if request and not isinstance(request, HttpRequest) and hasattr(request, '_request'):
-            request = request._request
-        return request
-
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
-                raise serializers.ValidationError(
-                    _("A user is already registered with this e-mail address."))
+                raise serializers.ValidationError(_("A user is already registered with this e-mail address."))
         return email
-    
+
     def validate(self, attrs):
-        password=attrs.get('password')
-        confirm_password=attrs.get('confirm_password')
-        if password!=confirm_password:
-            raise serializers.ValidationError(_("Password and Confirm Password doesn't  match"))
-        return attrs    
-    
+        password = attrs.get('password')
+        confirm_password = attrs.get('confirm_password')
+        if password != confirm_password:
+            raise serializers.ValidationError(_("Password and Confirm Password don't match"))
+        return attrs
+
     def create(self, validated_data):
-        if 'user' in validated_data:
-                return validated_data['user']
-        user = User(
+        user_profile_data = validated_data.pop('profile', None)
+        patient_info_data = validated_data.pop('patient_info', None)
+
+        user = User.objects.create(
             email=validated_data.get('email'),
             name=validated_data.get('name'),
             username=generate_unique_username([
@@ -88,14 +94,31 @@ class SignupSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data.get('password'))
         user.save()
+        if user_profile_data:
+            if user_profile_data['user_type']:
+                user_type = user_profile_data.get('user_type')
+                UserProfile.objects.create(user=user, user_type=user_type)
+        
+        if patient_info_data:
+            PatientInfo.objects.create(user=user, **patient_info_data)
         request = self._get_request()
         setup_user_email(request, user, [])
         return user
-    
+
+    def _get_request(self):
+        request = self.context.get('request')
+        if request and not isinstance(request, HttpRequest) and hasattr(request, '_request'):
+            request = request._request
+        return request
 
     def save(self, request=None):
         """rest_auth passes request so we must override to accept it"""
         return super().save()
+
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     representation['profile_picture'] = instance.profile.profile_picture.url if instance.profile.profile_picture else None
+    #     return representation
 
 class AuthTokenByEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -126,7 +149,7 @@ class AuthTokenByEmailSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'linkedin','full_name','phone_number', 'gender']
+        fields = ['id', 'email', 'full_name','phone_number', 'gender', 'profile_picture']
 
 
 class PasswordSerializer(PasswordResetSerializer):
@@ -266,7 +289,3 @@ class UserDetailSerializer(serializers.ModelSerializer):
             else:
                 return None
             
-# class ProfessionalExperienceSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model=ProfessionalExperience
-#         fields=['desired_job_role', 'preferred_industry', 'experience', 'job_location' , 'career_goals','Remote','Resume']                        
