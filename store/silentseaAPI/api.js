@@ -47,6 +47,30 @@ function modules_privacy_policy_partial_update(payload) {
 function modules_privacy_policy_destroy(payload) {
   return silentseaAPI.delete(`/modules/privacy-policy/${payload.id}/`)
 }
+function modules_terms_and_conditions_list(payload) {
+  return silentseaAPI.get(`/modules/terms-and-conditions/`)
+}
+function modules_terms_and_conditions_create(payload) {
+  return silentseaAPI.post(`/modules/terms-and-conditions/`, payload)
+}
+function modules_terms_and_conditions_retrieve(payload) {
+  return silentseaAPI.get(`/modules/terms-and-conditions/${payload.id}/`)
+}
+function modules_terms_and_conditions_update(payload) {
+  return silentseaAPI.put(
+    `/modules/terms-and-conditions/${payload.id}/`,
+    payload
+  )
+}
+function modules_terms_and_conditions_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/terms-and-conditions/${payload.id}/`,
+    payload
+  )
+}
+function modules_terms_and_conditions_destroy(payload) {
+  return silentseaAPI.delete(`/modules/terms-and-conditions/${payload.id}/`)
+}
 function rest_auth_login_create(payload) {
   return silentseaAPI.post(`/rest-auth/login/`, payload)
 }
@@ -94,6 +118,12 @@ export const apiService = {
   modules_privacy_policy_update,
   modules_privacy_policy_partial_update,
   modules_privacy_policy_destroy,
+  modules_terms_and_conditions_list,
+  modules_terms_and_conditions_create,
+  modules_terms_and_conditions_retrieve,
+  modules_terms_and_conditions_update,
+  modules_terms_and_conditions_partial_update,
+  modules_terms_and_conditions_destroy,
   rest_auth_login_create,
   rest_auth_logout_retrieve,
   rest_auth_logout_create,
