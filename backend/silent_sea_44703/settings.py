@@ -77,6 +77,7 @@ LOCAL_APPS = [
     'home',
     'users.apps.UsersConfig',
     'modules.django_privacy_policy.privacy_policy',
+    'modules.django_terms_and_conditions.terms_and_conditions',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
