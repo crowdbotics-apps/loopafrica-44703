@@ -26,6 +26,27 @@ function api_v1_update_profile_pic_partial_update(payload) {
     payload
   )
 }
+function modules_contact_us_contact_us_create(payload) {
+  return silentseaAPI.post(`/modules/contact-us/contact_us/`)
+}
+function modules_privacy_policy_list(payload) {
+  return silentseaAPI.get(`/modules/privacy-policy/`)
+}
+function modules_privacy_policy_create(payload) {
+  return silentseaAPI.post(`/modules/privacy-policy/`, payload)
+}
+function modules_privacy_policy_retrieve(payload) {
+  return silentseaAPI.get(`/modules/privacy-policy/${payload.id}/`)
+}
+function modules_privacy_policy_update(payload) {
+  return silentseaAPI.put(`/modules/privacy-policy/${payload.id}/`, payload)
+}
+function modules_privacy_policy_partial_update(payload) {
+  return silentseaAPI.patch(`/modules/privacy-policy/${payload.id}/`, payload)
+}
+function modules_privacy_policy_destroy(payload) {
+  return silentseaAPI.delete(`/modules/privacy-policy/${payload.id}/`)
+}
 function rest_auth_login_create(payload) {
   return silentseaAPI.post(`/rest-auth/login/`, payload)
 }
@@ -66,6 +87,13 @@ export const apiService = {
   api_v1_update_profile_pic_retrieve,
   api_v1_update_profile_pic_update,
   api_v1_update_profile_pic_partial_update,
+  modules_contact_us_contact_us_create,
+  modules_privacy_policy_list,
+  modules_privacy_policy_create,
+  modules_privacy_policy_retrieve,
+  modules_privacy_policy_update,
+  modules_privacy_policy_partial_update,
+  modules_privacy_policy_destroy,
   rest_auth_login_create,
   rest_auth_logout_retrieve,
   rest_auth_logout_create,
