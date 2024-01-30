@@ -19,7 +19,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from users.models import User, UserProfile, PatientInfo
+from users.models import User, UserProfile, PatientInfo, Doctor, Instructor
+
 
 import os
 import boto3
@@ -42,15 +43,28 @@ class PatientInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientInfo
         fields = ['patient_id', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'support_needed']
+
+class DoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification']
+
+class InstructorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Instructor
+        fields = ['age', 'address', 'about_instructor', 'specialized', 'qualification']
         
 class SignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
     profile = UserProfileSerializer()
     patient_info = PatientInfoSerializer(required=False)
+    doctor_info = DoctorSerializer(required=False)
+    instructor_info = InstructorSerializer(required=False)
 
     class Meta:
         model = User
-        fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'profile', 'patient_info', 'password', 'confirm_password')
+        #fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'profile', 'patient_info', 'password', 'confirm_password')
+        fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'profile', 'patient_info', 'doctor_info', 'instructor_info', 'password', 'confirm_password')
         
         extra_kwargs = {
             'password': {
@@ -82,6 +96,8 @@ class SignupSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_profile_data = validated_data.pop('profile', None)
         patient_info_data = validated_data.pop('patient_info', None)
+        doctor_info_data = validated_data.pop('doctor_info', None)
+        instructor_info_data = validated_data.pop('instructor_info', None)
 
         user = User.objects.create(
             email=validated_data.get('email'),
@@ -101,6 +117,13 @@ class SignupSerializer(serializers.ModelSerializer):
         
         if patient_info_data:
             PatientInfo.objects.create(user=user, **patient_info_data)
+
+        if doctor_info_data:
+            Doctor.objects.create(user=user, **doctor_info_data)
+
+        if instructor_info_data:
+            Instructor.objects.create(user=user, **instructor_info_data)
+            
         request = self._get_request()
         setup_user_email(request, user, [])
         return user
