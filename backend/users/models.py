@@ -47,7 +47,7 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     avatar = models.ImageField(upload_to=get_upload_path, blank=True, null=True,)
     profile_picture = models.ImageField(upload_to=get_upload_profile_pic, null=True, blank=True)
-    linkedin = models.CharField(max_length=255, null=True, blank=True)
+    linkedin = models.CharField(max_length=255, null=True, blank=True)    
 
     def save(self, *args, **kwargs):
         is_new_user = not self.pk
@@ -57,6 +57,8 @@ class UserProfile(models.Model):
     class UserType(models.TextChoices):
         PATIENT = 'patient', _('Patient')
         HEALTHCARE_PROVIDER = 'healthcare_provider', _('Healthcare Provider')
+        DOCTOR = 'doctor', _('doctor')
+        INSTRUCTOR = 'instructor', _('instructor')
         ADMIN = 'admin', _('Admin')
         ACCOUNTANT = 'accountant', _('Accountant')
         SALES = 'sales', _('Sales')
@@ -116,3 +118,31 @@ class PatientInfo(models.Model):
 
     def __str__(self):
         return f"Patient Info for {self.user.username}"
+    
+class Doctor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor')
+    doctor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    age = models.IntegerField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    about_doctor = models.TextField(null=True, blank=True)
+    specialized = models.TextField(null=True, blank=True)
+    qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')    
+
+    def __str__(self):
+        return f"Doctor Info for {self.user.username}"
+
+class Instructor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='instructor')
+    instructor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    age = models.IntegerField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    about_instructor = models.TextField(null=True, blank=True)
+    specialized = models.TextField(null=True, blank=True)
+    qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='instructor_last_updated_by')    
+
+    def __str__(self):
+        return f"Instructor Info for {self.user.username}"
