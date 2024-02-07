@@ -8,14 +8,14 @@ from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User, Feedback
-
+from users.models import User, Feedback, Appointment
 
 from home.api.v1.serializers import (
     SignupSerializer,
     UserSerializer,
     UserProfileUpdateSerializer,
     FeedbackSerializer,
+    AppointmentSerializer,
 )
 
 
@@ -65,3 +65,8 @@ class FeedbackViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class AppointmentViewSet(ModelViewSet):
+    queryset = Appointment.objects.all()
+    serializer_class = AppointmentSerializer
+    permission_classes = [IsAuthenticated]

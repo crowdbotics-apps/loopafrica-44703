@@ -19,8 +19,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback
-
+from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment
 
 
 import os
@@ -321,4 +320,9 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
+        fields = '__all__'
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Appointment
         fields = '__all__'

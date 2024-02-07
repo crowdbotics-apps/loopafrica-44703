@@ -6,12 +6,14 @@ from home.api.v1.viewsets import (
     LoginViewSet,
     UserProfileUpdateView,
     FeedbackViewSet,
+    AppointmentViewSet,
 )
 
 router = DefaultRouter()
 router.register("signup", SignupViewSet, basename="signup")
 router.register("login", LoginViewSet, basename="login")
 router.register("feedback", FeedbackViewSet, basename="feedback")
+router.register('appointments', AppointmentViewSet, basename='appointment')
 
 urlpatterns = [
     path("", include(router.urls)),

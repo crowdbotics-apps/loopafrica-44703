@@ -158,3 +158,17 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback from {self.user.username}"
+
+class Appointment(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE)
+    date = models.DateField()
+    consult_time = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    doctor_queries = models.TextField(null=True, blank=True)
+    health_issue = models.TextField(null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='appoinment_last_updated_by')
+
+    def __str__(self):
+        return f"Appointment for {self.user.username} with {self.doctor.user.username}"
