@@ -8,6 +8,24 @@ function api_docs_schema_retrieve(payload) {
     params: { lang: payload.lang }
   })
 }
+function api_v1_feedback_list(payload) {
+  return silentseaAPI.get(`/api/v1/feedback/`)
+}
+function api_v1_feedback_create(payload) {
+  return silentseaAPI.post(`/api/v1/feedback/`, payload)
+}
+function api_v1_feedback_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/feedback/${payload.id}/`)
+}
+function api_v1_feedback_update(payload) {
+  return silentseaAPI.put(`/api/v1/feedback/${payload.id}/`, payload)
+}
+function api_v1_feedback_partial_update(payload) {
+  return silentseaAPI.patch(`/api/v1/feedback/${payload.id}/`, payload)
+}
+function api_v1_feedback_destroy(payload) {
+  return silentseaAPI.delete(`/api/v1/feedback/${payload.id}/`)
+}
 function api_v1_login_create(payload) {
   return silentseaAPI.post(`/api/v1/login/`, payload)
 }
@@ -106,6 +124,12 @@ function rest_auth_user_partial_update(payload) {
 }
 export const apiService = {
   api_docs_schema_retrieve,
+  api_v1_feedback_list,
+  api_v1_feedback_create,
+  api_v1_feedback_retrieve,
+  api_v1_feedback_update,
+  api_v1_feedback_partial_update,
+  api_v1_feedback_destroy,
   api_v1_login_create,
   api_v1_signup_create,
   api_v1_update_profile_pic_retrieve,
