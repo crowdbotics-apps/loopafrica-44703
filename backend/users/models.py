@@ -146,3 +146,15 @@ class Instructor(models.Model):
 
     def __str__(self):
         return f"Instructor Info for {self.user.username}"
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=255)
+    message = models.TextField()
+    replied = models.BooleanField(default=False)
+    reply_message = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='feedback_last_updated_by')    
+
+    def __str__(self):
+        return f"Feedback from {self.user.username}"
