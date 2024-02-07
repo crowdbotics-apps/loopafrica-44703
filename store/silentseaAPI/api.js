@@ -8,6 +8,24 @@ function api_docs_schema_retrieve(payload) {
     params: { lang: payload.lang }
   })
 }
+function api_v1_appointments_list(payload) {
+  return silentseaAPI.get(`/api/v1/appointments/`)
+}
+function api_v1_appointments_create(payload) {
+  return silentseaAPI.post(`/api/v1/appointments/`, payload)
+}
+function api_v1_appointments_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/appointments/${payload.id}/`)
+}
+function api_v1_appointments_update(payload) {
+  return silentseaAPI.put(`/api/v1/appointments/${payload.id}/`, payload)
+}
+function api_v1_appointments_partial_update(payload) {
+  return silentseaAPI.patch(`/api/v1/appointments/${payload.id}/`, payload)
+}
+function api_v1_appointments_destroy(payload) {
+  return silentseaAPI.delete(`/api/v1/appointments/${payload.id}/`)
+}
 function api_v1_feedback_list(payload) {
   return silentseaAPI.get(`/api/v1/feedback/`)
 }
@@ -124,6 +142,12 @@ function rest_auth_user_partial_update(payload) {
 }
 export const apiService = {
   api_docs_schema_retrieve,
+  api_v1_appointments_list,
+  api_v1_appointments_create,
+  api_v1_appointments_retrieve,
+  api_v1_appointments_update,
+  api_v1_appointments_partial_update,
+  api_v1_appointments_destroy,
   api_v1_feedback_list,
   api_v1_feedback_create,
   api_v1_feedback_retrieve,
