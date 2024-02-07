@@ -19,7 +19,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from users.models import User, UserProfile, PatientInfo, Doctor, Instructor
+from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback
+
 
 
 import os
@@ -63,7 +64,6 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        #fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'profile', 'patient_info', 'password', 'confirm_password')
         fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'profile', 'patient_info', 'doctor_info', 'instructor_info', 'password', 'confirm_password')
         
         extra_kwargs = {
@@ -316,3 +316,9 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'profile_picture']
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = '__all__'

@@ -8,13 +8,14 @@ from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User
+from users.models import User, Feedback
 
 
 from home.api.v1.serializers import (
     SignupSerializer,
     UserSerializer,
     UserProfileUpdateSerializer,
+    FeedbackSerializer,
 )
 
 
@@ -56,3 +57,11 @@ class UserProfileUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+class FeedbackViewSet(ModelViewSet):
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
