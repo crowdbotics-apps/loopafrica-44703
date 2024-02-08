@@ -1,3 +1,4 @@
+from typing import Dict
 import requests
 from requests import Response
 from os.path import join
@@ -50,6 +51,21 @@ class Client:
         payload = {"app_id": self.app_id, **body}
         return requests.post(path, headers=header, data=payload)
 
+    def send_notification(self, external_id, message):
+        headers = {
+            "Authorization": "Basic YOUR_REST_API_KEY",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+
+        payload = {
+            "app_id": "YOUR_APP_ID",
+            "include_external_user_ids": [external_id],
+            "contents": {"en": message}
+        }
+
+        response = requests.post("https://onesignal.com/api/v1/notifications", headers=headers, json=payload)
+        return response.json()
+
     def cancel_notification(self, id: int) -> Response:
         """
         Stop a scheduled or currently outgoing notification
@@ -61,6 +77,15 @@ class Client:
         path = self._path(NOTIFICATION_PATH, id=id)
         payload = {"app_id": self.app_id}
         return requests.delete(path, headers=header, params=payload)
+    
+    def create_device(self, data):
+        headers = {
+            "Authorization": f"Basic {self.rest_api_key}",
+            "Content-Type": "application/json; charset=utf-8"
+        }
+        path = DEVICES_PATH
+        payload = {"app_id": self.app_id, **data}
+        return requests.post(path, headers=headers, json=payload)
 
     def view_apps(self) -> Response:
         """

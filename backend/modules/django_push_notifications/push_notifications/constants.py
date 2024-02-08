@@ -1,4 +1,7 @@
 # Requests config
+from typing import Dict
+
+
 JSON_HEADER = {"Content-Type": "application/json; charset=utf-8"}
 
 
