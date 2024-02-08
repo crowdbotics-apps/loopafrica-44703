@@ -11,7 +11,7 @@ import {
 import TwoTextInputRow from "../../components/twoTextInputRow"
 import TextInputWithLabel from "../../components/textInputWithLabel"
 import Button from "../../components/button"
-import DatePicker from "react-native-date-picker"
+// import DatePicker from "react-native-date-picker"
 import moment from "moment"
 
 const Step1 = props => {
@@ -171,7 +171,7 @@ const Step1 = props => {
           // props?.setStep(parseInt(props?.step) + 1)
         }}
       />
-      <DatePicker
+      {/* <DatePicker
         modal
         mode="date"
         open={props?.datePicker}
@@ -187,7 +187,7 @@ const Step1 = props => {
           props?.isDatePicker(false)
         }}
         maximumDate={new Date("2006-12-31")}
-      />
+      /> */}
     </>
   )
 }
