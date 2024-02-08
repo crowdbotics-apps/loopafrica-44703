@@ -101,6 +101,11 @@ class SignupSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             email=validated_data.get('email'),
             name=validated_data.get('name'),
+            full_name=validated_data.get('full_name'),
+            first_name=validated_data.get('first_name'),
+            last_name=validated_data.get('last_name'),
+            gender=validated_data.get('gender'),
+            phone_number=validated_data.get('phone_number'),
             username=generate_unique_username([
                 validated_data.get('name'),
                 validated_data.get('email'),
