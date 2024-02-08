@@ -78,6 +78,7 @@ LOCAL_APPS = [
     'users.apps.UsersConfig',
     'modules.django_privacy_policy.privacy_policy',
     'modules.django_terms_and_conditions.terms_and_conditions',
+    'modules.django_push_notifications.push_notifications',   
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',

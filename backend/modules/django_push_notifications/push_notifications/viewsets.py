@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import OneSignalApp
+from .models import OneSignalApp, Device, Segment, Subscription, User
 from .serializers import OneSignalAppSerializer, SubscriptionSerializer, SegmentSerializer, UserSerializer, DeviceSerializer
 from .client import Client
 
