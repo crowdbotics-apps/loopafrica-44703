@@ -83,6 +83,27 @@ function modules_privacy_policy_partial_update(payload) {
 function modules_privacy_policy_destroy(payload) {
   return silentseaAPI.delete(`/modules/privacy-policy/${payload.id}/`)
 }
+function modules_push_notifications_list(payload) {
+  return silentseaAPI.get(`/modules/push-notifications/`)
+}
+function modules_push_notifications_create(payload) {
+  return silentseaAPI.post(`/modules/push-notifications/`, payload)
+}
+function modules_push_notifications_retrieve(payload) {
+  return silentseaAPI.get(`/modules/push-notifications/${payload.id}/`)
+}
+function modules_push_notifications_update(payload) {
+  return silentseaAPI.put(`/modules/push-notifications/${payload.id}/`, payload)
+}
+function modules_push_notifications_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/push-notifications/${payload.id}/`,
+    payload
+  )
+}
+function modules_push_notifications_destroy(payload) {
+  return silentseaAPI.delete(`/modules/push-notifications/${payload.id}/`)
+}
 function modules_terms_and_conditions_list(payload) {
   return silentseaAPI.get(`/modules/terms-and-conditions/`)
 }
@@ -166,6 +187,12 @@ export const apiService = {
   modules_privacy_policy_update,
   modules_privacy_policy_partial_update,
   modules_privacy_policy_destroy,
+  modules_push_notifications_list,
+  modules_push_notifications_create,
+  modules_push_notifications_retrieve,
+  modules_push_notifications_update,
+  modules_push_notifications_partial_update,
+  modules_push_notifications_destroy,
   modules_terms_and_conditions_list,
   modules_terms_and_conditions_create,
   modules_terms_and_conditions_retrieve,
