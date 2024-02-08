@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
   titleTxt: {
     fontSize: Math.round(widthPercentageToDP(4.2)),
     fontFamily: "Poppins-Regular",
-    color: Colors.white
+    color: Colors.white,
+    paddingRight: 5
   },
   selectedTitle: {
     backgroundColor: "#96DAEF",

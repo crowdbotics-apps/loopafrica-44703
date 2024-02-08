@@ -137,7 +137,7 @@ const Step1 = props => {
           alignSelf: "center",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: 'center',
+          justifyContent: "center"
           // paddingTop: 10
         }}
       >
@@ -145,18 +145,18 @@ const Step1 = props => {
           onPress={() => {
             props?.isTerms(!props?.terms)
           }}
-          style={{ width: "10%", alignItems:'center',marginRight: 5 }}
+          style={{ width: "10%", alignItems: "center", marginRight: 5 }}
         >
           <Image
             source={props?.terms ? CHECKBOX_SOLID : CHECKBOX_EMPTY}
             style={{
-              width:  props?.terms ? 20 :  20,
-              height:  props?.terms ? 20 : 20
+              width: props?.terms ? 20 : 20,
+              height: props?.terms ? 20 : 20
             }}
           />
         </TouchableOpacity>
         <View style={{ width: "80%" }}>
-          <Text style={[styles.termTxt, { marginTop: 10}]}>
+          <Text style={[styles.termTxt, { marginTop: 10 }]}>
             I agree to the{" "}
             <Text style={{ color: "#44C8F5" }}>Terms & Conditions</Text> and{" "}
             <Text style={{ color: "#44C8F5" }}>Privacy Policy</Text>
@@ -171,25 +171,23 @@ const Step1 = props => {
           // props?.setStep(parseInt(props?.step) + 1)
         }}
       />
-      <>
-        <DatePicker
-          modal
-          mode="date"
-          open={props?.datePicker}
-          date={props?.dob ? new Date(props?.dob) : new Date()}
-          title={"Select Date of Birth"}
-          onConfirm={date => {
-            if (date) {
-              props?.setDob(moment(date).format("YYYY-MM-DD"))
-            }
-            props?.isDatePicker(false)
-          }}
-          onCancel={() => {
-            props?.isDatePicker(false)
-          }}
-          maximumDate={new Date("2006-12-31")}
-        />
-      </>
+      <DatePicker
+        modal
+        mode="date"
+        open={props?.datePicker}
+        date={props?.dob ? new Date(props?.dob) : new Date()}
+        title={"Select Date of Birth"}
+        onConfirm={date => {
+          if (date) {
+            props?.setDob(moment(date).format("YYYY-MM-DD"))
+          }
+          props?.isDatePicker(false)
+        }}
+        onCancel={() => {
+          props?.isDatePicker(false)
+        }}
+        maximumDate={new Date("2006-12-31")}
+      />
     </>
   )
 }
