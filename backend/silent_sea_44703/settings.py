@@ -71,14 +71,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites'
+    'django.contrib.sites',
 ]
 LOCAL_APPS = [
     'home',
     'users.apps.UsersConfig',
     'modules.django_privacy_policy.privacy_policy',
     'modules.django_terms_and_conditions.terms_and_conditions',
-    'modules.django_push_notifications.push_notifications',   
+    'modules.django_push_notifications.push_notifications',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
