@@ -25,7 +25,7 @@ import Step4 from "./step4"
 import Step5 from "./step5"
 import Step6 from "./step6"
 import Step7 from "./step7"
-import Toast from "react-native-toast-message"
+// import Toast from "react-native-toast-message"
 
 
 const OnBoarding = props => {
@@ -170,13 +170,13 @@ const OnBoarding = props => {
       obj => obj.select === true
     )
     if (tempWellnessGoalArr?.length === 0) {
-      Toast.show({
-        type: "error",
-        props: {
-          heading: "Wellness Goals",
-          desc: "Please select atleast one option"
-        }
-      })
+      // Toast.show({
+      //   type: "error",
+      //   props: {
+      //     heading: "Wellness Goals",
+      //     desc: "Please select atleast one option"
+      //   }
+      // })
     } else {
       props?.navigation?.navigate("RegisterSignup", { details: userDetails })
     }

@@ -3,7 +3,7 @@ import { View, Text } from "react-native"
 import styles from "./styles"
 import Button from "../button"
 import { useNavigation } from "@react-navigation/native"
-import Toast from "react-native-toast-message"
+// import Toast from "react-native-toast-message"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Logout = props => {
@@ -12,10 +12,10 @@ const Logout = props => {
   const navigation = useNavigation()
 
   const handleLogout = () => {
-    Toast.show({
-      type: "success",
-      props: { heading: "Logout", desc: "Logout successfully !!!" }
-    })
+    // Toast.show({
+    //   type: "success",
+    //   props: { heading: "Logout", desc: "Logout successfully !!!" }
+    // })
     console.log("oooooppppppp")
     props?.route?.params?.auth?.signOut()
   }

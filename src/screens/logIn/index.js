@@ -10,7 +10,7 @@ import {
 import TextInputWithLabel from "../../components/textInputWithLabel"
 import Button from "../../components/button"
 import axios from "axios"
-import Toast from "react-native-toast-message"
+// import Toast from "react-native-toast-message"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const LogIn = props => {
@@ -20,21 +20,21 @@ const LogIn = props => {
   const handleLoginAPI = () => {
     try {
       if (!email?.trim()) {
-        Toast.show({
-          type: "error",
-          props: {
-            heading: "Login",
-            desc: "Email address can't be empty"
-          }
-        })
+        // Toast.show({
+        //   type: "error",
+        //   props: {
+        //     heading: "Login",
+        //     desc: "Email address can't be empty"
+        //   }
+        // })
       } else if (!password?.trim()) {
-        Toast.show({
-          type: "error",
-          props: {
-            heading: "Login",
-            desc: "Password can't be empty"
-          }
-        })
+        // Toast.show({
+        //   type: "error",
+        //   props: {
+        //     heading: "Login",
+        //     desc: "Password can't be empty"
+        //   }
+        // })
       } else {
         let data = JSON.stringify({
           username: "",
@@ -56,50 +56,50 @@ const LogIn = props => {
           .then(response => {
             console.log("00000: ", response?.data)
             if (response?.status === 200) {
-              Toast.show({
-                type: "success",
-                props: {
-                  heading: "Login",
-                  desc: "Login successfully !!!"
-                }
-              })
+              // Toast.show({
+              //   type: "success",
+              //   props: {
+              //     heading: "Login",
+              //     desc: "Login successfully !!!"
+              //   }
+              // })
               AsyncStorage.setItem("data", JSON.stringify(response?.data))
               props?.route?.params?.auth?.signIn()
               // props?.navigation?.navigate("Home")
             } else if (response?.status === 400) {
-              Toast.show({
-                type: "error",
-                props: {
-                  heading: "Login",
-                  desc: "Unable to log in with provided credentials."
-                }
-              })
+              // Toast.show({
+              //   type: "error",
+              //   props: {
+              //     heading: "Login",
+              //     desc: "Unable to log in with provided credentials."
+              //   }
+              // })
             }
           })
           .catch(error => {
             console.log("ERROR: ", error?.response?.data)
             if (error?.response?.status === 400) {
-              Toast.show({
-                type: "error",
-                props: {
-                  heading: "Login",
-                  desc: error?.response?.data?.hasOwnProperty(
-                    "non_field_errors"
-                  )
-                    ? error?.response?.data["non_field_errors"][0]
-                    : error?.response?.data?.hasOwnProperty("email")
-                    ? error?.response?.data["email"][0]
-                    : "Something went wrong"
-                }
-              })
+              // Toast.show({
+              //   type: "error",
+              //   props: {
+              //     heading: "Login",
+              //     desc: error?.response?.data?.hasOwnProperty(
+              //       "non_field_errors"
+              //     )
+              //       ? error?.response?.data["non_field_errors"][0]
+              //       : error?.response?.data?.hasOwnProperty("email")
+              //       ? error?.response?.data["email"][0]
+              //       : "Something went wrong"
+              //   }
+              // })
             } else {
-              Toast.show({
-                type: "error",
-                props: {
-                  heading: "Login",
-                  desc: "Something went wrong, please try again"
-                }
-              })
+              // Toast.show({
+              //   type: "error",
+              //   props: {
+              //     heading: "Login",
+              //     desc: "Something went wrong, please try again"
+              //   }
+              // })
             }
           })
       }
