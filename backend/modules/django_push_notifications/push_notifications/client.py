@@ -49,6 +49,7 @@ class Client:
         header = get_header(self.rest_api_key)
         path = self._path(NOTIFICATIONS_PATH)
         payload = {"app_id": self.app_id, **body}
+        print(path, header, payload)
         return requests.post(path, headers=header, data=payload)
 
     def send_notification(self, external_id, message):
