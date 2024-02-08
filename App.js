@@ -1,97 +1,52 @@
-import React, { useContext } from "react"
-import { Provider } from "react-redux"
-import "react-native-gesture-handler"
+import React from "react"
 import { NavigationContainer } from "@react-navigation/native"
-import { createStackNavigator } from "@react-navigation/stack"
-import { Provider as PaperProvider } from "react-native-paper";
-import {
-  configureStore,
-  createReducer,
-  combineReducers
-} from "@reduxjs/toolkit"
-
-import { screens } from "@screens"
-import { modules, reducers, hooks } from "@modules"
-import { connectors } from "@store"
-import {
-  GlobalOptionsContext,
-  OptionsContext,
-  getOptions,
-  getGlobalOptions
-} from "@options"
-
-const Stack = createStackNavigator()
-
-const getNavigation = modules => {
-  const globalOptions = getGlobalOptions()
-
-  const initialRoute =
-    globalOptions.initialRoute || (modules[0] && modules[0].value.title)
-
-  const Navigation = () => {
-    const routes = modules.map(mod => {
-      const pakage = mod.package
-      const name = mod.value.title
-      const Navigator = mod.value.navigator
-      const Component = props => {
-        return (
-          <OptionsContext.Provider value={getOptions(pakage)}>
-            <Navigator {...props} />
-          </OptionsContext.Provider>
-        )
-      }
-      return <Stack.Screen key={name} name={name} component={Component} />
-    })
-
-    const { screenOptions } = globalOptions
-
-    return (
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={initialRoute}
-          screenOptions={screenOptions}
-        >
-          {routes}
-        </Stack.Navigator>
-      </NavigationContainer>
-    )
-  }
-  return Navigation
-}
-
-const getStore = globalState => {
-  const appReducer = createReducer(globalState, _ => {
-    return globalState
-  })
-
-  const reducer = combineReducers({
-    app: appReducer,
-    ...reducers,
-    ...connectors
-  })
-
-  return configureStore({
-    reducer: reducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware()
-  })
-}
+import AuthStack from "./src/routing/AuthStack"
+import { Platform, SafeAreaView, StatusBar } from "react-native"
+import Colors from "./src/utils/colors"
+import Toast from "react-native-toast-message"
+import { toastConfig } from "./src/components/toastConfig"
+import BottomTabNavigator from "./src/routing/BottomTab"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const App = () => {
-  const global = useContext(GlobalOptionsContext)
-  const Navigation = getNavigation(modules.concat(screens))
-  const store = getStore(global)
+  const [loogedIn, setLoggedIn] = React.useState(false)
 
-  let effects = {}
-  hooks.map(hook => {
-    effects[hook.name] = hook.value()
-  })
+  const signOut = () => {
+    AsyncStorage.clear()
+    setLoggedIn(!loogedIn)
+  }
+
+  const signIn = () => {
+    // AsyncStorage.clear();
+    setLoggedIn(!loogedIn)
+  }
 
   return (
-    <Provider store={store}>
-      <PaperProvider>
-        <Navigation />
-      </PaperProvider>
-    </Provider>
+    <>
+      <StatusBar animated={true} barStyle={"dark-content"} />
+      {Platform.OS === "ios" ? (
+        <SafeAreaView style={{ flex: 1, backgroundColor: !loogedIn ? Colors.appThemeColor : "#01E5C0" }}>
+          {!loogedIn ? (
+            <NavigationContainer>
+              <AuthStack  signIn={signIn} />
+            </NavigationContainer>
+          ) : (
+            <NavigationContainer>
+              <BottomTabNavigator signOut={signOut} />
+            </NavigationContainer>
+          )}
+        </SafeAreaView>
+      ) : !loogedIn ? (
+        <NavigationContainer>
+          <AuthStack signIn={signIn} />
+        </NavigationContainer>
+      ) : (
+        <NavigationContainer>
+          <BottomTabNavigator signOut={signOut} />
+        </NavigationContainer>
+      )}
+      <Toast config={toastConfig} position="bottom" autoHide={true} />
+    </>
   )
 }
 

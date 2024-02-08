@@ -8,13 +8,13 @@
 const path = require("path")
 const extraNodeModules = {
   "@modules": path.resolve(__dirname, "modules"),
-  "@screens": path.resolve(__dirname, "screens"),
-  "@options": path.resolve(__dirname, "options")
+  "@options": path.resolve(__dirname, "options"),
+  "@src": path.resolve(__dirname, "src")
 }
 const watchFolders = [
   path.resolve(__dirname, "modules"),
-  path.resolve(__dirname, "screens"),
-  path.resolve(__dirname, "options")
+  path.resolve(__dirname, "options"),
+  path.resolve(__dirname, "src")
 ]
 module.exports = {
   transformer: {
