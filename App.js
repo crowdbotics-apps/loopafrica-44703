@@ -7,7 +7,6 @@ import Colors from "./src/utils/colors"
 // import { toastConfig } from "./src/components/toastConfig"
 import BottomTabNavigator from "./src/routing/BottomTab"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { Provider } from "react-redux"
 
 const App = () => {
   const [loogedIn, setLoggedIn] = React.useState(false)
@@ -23,7 +22,7 @@ const App = () => {
   }
 
   return (
-    <Provider>
+    <>
       <StatusBar animated={true} barStyle={"dark-content"} />
       {Platform.OS === "ios" ? (
         <SafeAreaView style={{ flex: 1, backgroundColor: !loogedIn ? Colors.appThemeColor : "#01E5C0" }}>
@@ -47,7 +46,7 @@ const App = () => {
         </NavigationContainer>
       )}
       {/* <Toast config={toastConfig} position="bottom" autoHide={true} /> */}
-    </Provider>
+    </>
   )
 }
 
