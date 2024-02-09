@@ -62,6 +62,30 @@ function api_v1_update_profile_pic_partial_update(payload) {
     payload
   )
 }
+function api_v1_user_profiles_list(payload) {
+  return silentseaAPI.get(`/api/v1/user-profiles/`)
+}
+function api_v1_user_profiles_create(payload) {
+  return silentseaAPI.post(`/api/v1/user-profiles/`, payload)
+}
+function api_v1_user_profiles_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/user-profiles/${payload.id}/`)
+}
+function api_v1_user_profiles_update(payload) {
+  return silentseaAPI.put(`/api/v1/user-profiles/${payload.id}/`, payload)
+}
+function api_v1_user_profiles_partial_update(payload) {
+  return silentseaAPI.patch(`/api/v1/user-profiles/${payload.id}/`, payload)
+}
+function api_v1_user_profiles_destroy(payload) {
+  return silentseaAPI.delete(`/api/v1/user-profiles/${payload.id}/`)
+}
+function api_v1_user_profiles_profile_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/user-profiles/profile/`)
+}
+function api_v1_user_profiles_update_profile_create(payload) {
+  return silentseaAPI.post(`/api/v1/user-profiles/update_profile/`, payload)
+}
 function modules_contact_us_contact_us_create(payload) {
   return silentseaAPI.post(`/modules/contact-us/contact_us/`)
 }
@@ -180,6 +204,14 @@ export const apiService = {
   api_v1_update_profile_pic_retrieve,
   api_v1_update_profile_pic_update,
   api_v1_update_profile_pic_partial_update,
+  api_v1_user_profiles_list,
+  api_v1_user_profiles_create,
+  api_v1_user_profiles_retrieve,
+  api_v1_user_profiles_update,
+  api_v1_user_profiles_partial_update,
+  api_v1_user_profiles_destroy,
+  api_v1_user_profiles_profile_retrieve,
+  api_v1_user_profiles_update_profile_create,
   modules_contact_us_contact_us_create,
   modules_privacy_policy_list,
   modules_privacy_policy_create,
