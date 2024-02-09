@@ -8,7 +8,8 @@ from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User, Feedback, Appointment
+from users.models import User, Feedback, Appointment, UserProfile
+from rest_framework.decorators import action
 
 from home.api.v1.serializers import (
     SignupSerializer,
@@ -16,6 +17,7 @@ from home.api.v1.serializers import (
     UserProfileUpdateSerializer,
     FeedbackSerializer,
     AppointmentSerializer,
+    UserProListSerializer
 )
 
 
@@ -70,3 +72,26 @@ class AppointmentViewSet(ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
     permission_classes = [IsAuthenticated]
+
+class UserProfileViewSet(ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProListSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return UserProfile.objects.filter(user=user)
+
+    @action(detail=False, methods=['get'])
+    def profile(self, request):
+        user_profile = self.get_queryset().first()
+        serializer = self.get_serializer(user_profile)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def update_profile(self, request):
+        user_profile = self.get_queryset().first()
+        serializer = self.get_serializer(user_profile, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    

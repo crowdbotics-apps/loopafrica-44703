@@ -105,6 +105,7 @@ class SignupSerializer(serializers.ModelSerializer):
             first_name=validated_data.get('first_name'),
             last_name=validated_data.get('last_name'),
             gender=validated_data.get('gender'),
+            dob=validated_data.get('dob'),
             phone_number=validated_data.get('phone_number'),
             username=generate_unique_username([
                 validated_data.get('name'),
@@ -331,3 +332,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = '__all__'
+
+class UserProListSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = UserProfile
+        fields = ['user', 'user_type']
