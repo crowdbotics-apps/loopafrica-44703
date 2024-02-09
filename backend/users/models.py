@@ -49,7 +49,8 @@ class User(AbstractUser):
     profile_picture = models.ImageField(upload_to=get_upload_profile_pic, null=True, blank=True)
     linkedin = models.CharField(max_length=255, null=True, blank=True)  
     dob = models.DateTimeField(null=True, blank=True)
-    last_updated_by = models.DateTimeField(null=True, blank=True)      
+    last_updated_by = models.DateTimeField(null=True, blank=True)   
+    is_active = models.BooleanField(default=True)   
 
     def save(self, *args, **kwargs):
         is_new_user = not self.pk
