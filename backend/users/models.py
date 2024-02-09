@@ -47,7 +47,9 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     avatar = models.ImageField(upload_to=get_upload_path, blank=True, null=True,)
     profile_picture = models.ImageField(upload_to=get_upload_profile_pic, null=True, blank=True)
-    linkedin = models.CharField(max_length=255, null=True, blank=True)    
+    linkedin = models.CharField(max_length=255, null=True, blank=True)  
+    dob = models.DateTimeField(null=True, blank=True)
+    last_updated_by = models.DateTimeField(null=True, blank=True)      
 
     def save(self, *args, **kwargs):
         is_new_user = not self.pk
