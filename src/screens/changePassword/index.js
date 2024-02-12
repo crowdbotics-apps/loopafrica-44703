@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native"
 import styles from "./styles"
 import TextInputWithLabel from "../../components/textInputWithLabel"
 import Button from "../../components/button"
-import { CIRCLE_ARROW } from "../../utils/images"
+import Header from "../../components/header"
 
 const ChangePassword = (props) => {
   const [currentPassword, setCurrentPassword] = useState("")
@@ -71,35 +71,7 @@ const ChangePassword = (props) => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 1.5,
-          backgroundColor: "#01E5C0",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => {
-              props?.navigation?.goBack()
-            }}
-          >
-            <Image source={CIRCLE_ARROW} />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text style={styles.headerTitle}>Change Password</Text>
-          </View>
-          <View style={{ width: "10%" }}></View>
-        </View>
-      </View>
+      <Header title={"Change Password"} />
       <View style={styles.body}>
         <ScrollView>
           <View style={styles.containerScreen}>

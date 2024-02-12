@@ -7,16 +7,10 @@ import {
   ScrollView,
   TextInput
 } from "react-native"
-import { CIRCLE_ARROW, NAME, EMAIL } from "../../utils/images"
-import styles from "./styles"
-import { ACCOUNT_SETTING } from "../../utils/constants"
+import { NAME, EMAIL } from "../../utils/images"
 import Button from "../../components/button"
-import Logout from "../../components/logout"
-import ModalContainer from "../../components/modalContainer"
-import { widthPercentageToDP, heightPercentageToDP } from "../../utils/size"
-import Colors from "../../utils/colors"
-import { Card } from "react-native-paper"
-
+import Header from "../../components/header"
+import styles from "./styles"
 
 const SupportFeedback = props => {
   const [name, setName] = useState("")
@@ -26,35 +20,7 @@ const SupportFeedback = props => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 1.5,
-          backgroundColor: "#01E5C0",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => {
-              props?.navigation?.goBack()
-            }}
-          >
-            <Image source={CIRCLE_ARROW} />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text style={styles.headerTitle}>Support / Send Feedback</Text>
-          </View>
-          <View style={{ width: "10%" }}></View>
-        </View>
-      </View>
+      <Header title={"Support / Send Feedback"} />
       <View style={{ flex: 8.5 }}>
         <View style={{ width: "90%", alignSelf: "center", marginTop: 20 }}>
           <ScrollView>
@@ -97,8 +63,8 @@ const SupportFeedback = props => {
                 />
               </View>
             </>
-            <>  
-              <View style={[styles.textInputWithLabelWpr,{marginTop: 20}]}>
+            <>
+              <View style={[styles.textInputWithLabelWpr, { marginTop: 20 }]}>
                 <TextInput
                   value={comment}
                   onChangeText={text => setComment(text)}
@@ -111,8 +77,7 @@ const SupportFeedback = props => {
                 />
               </View>
             </>
-            <Button 
-            name={"SUBMIT"} btnStyle={{ marginTop: 50}}/>
+            <Button name={"SUBMIT"} btnStyle={{ marginTop: 50 }} />
           </ScrollView>
         </View>
       </View>

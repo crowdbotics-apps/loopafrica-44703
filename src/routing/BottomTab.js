@@ -318,7 +318,8 @@ const BottomTabNavigator = props => {
           paddingBottom: 5
         },
         tabBarActiveTintColor: "#fff",
-        tabBarInactiveTintColor: "#fff"
+        tabBarInactiveTintColor: "#fff",
+        
       }}
     >
       <Tab.Screen

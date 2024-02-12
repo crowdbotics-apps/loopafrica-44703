@@ -8,17 +8,12 @@ import {
   FlatList
 } from "react-native"
 import {
-  CIRCLE_ARROW,
-  ARROW_RIGHT_BLUE,
-  DEFAULT_USER,
   ARROW_DOWN_GRAY
 } from "../../utils/images"
 import styles from "./styles"
-import { ACCOUNT_SETTING } from "../../utils/constants"
 import Button from "../../components/button"
-import Logout from "../../components/logout"
-import ModalContainer from "../../components/modalContainer"
 import { STAR_BLUE, APPOINTMENT_DEFAULT_USER } from "../../utils/images"
+import Header from "../../components/header"
 
 const DOCTOR_DETAILS = [
   { title: "Patients", value: "26+", id: 1, color: "#02B5F7" },
@@ -48,8 +43,6 @@ const TIME_SLOT = [
 ]
 
 const TelehealthAppointment = props => {
-  const [logout, isLogout] = useState(false)
-  const [deleteAccount, isDeleteAccount] = useState(false)
   const [dateList, setDateList] = useState(DAYS)
   const [timeSlot, setTimeSlot] = useState(TIME_SLOT)
 
@@ -83,35 +76,7 @@ const TelehealthAppointment = props => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 1.5,
-          backgroundColor: "#01E5C0",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => {
-              props?.navigation?.goBack()
-            }}
-          >
-            <Image source={CIRCLE_ARROW} />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text style={styles.headerTitle}>Appointment</Text>
-          </View>
-          <View style={{ width: "10%" }}></View>
-        </View>
-      </View>
+      <Header title={"Appointment"} />
       <View style={styles.body}>
         <View style={styles.bodyWpr}>
           <ScrollView>

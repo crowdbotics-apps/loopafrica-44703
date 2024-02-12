@@ -1,5 +1,5 @@
 const Colors = {
-  appThemeColor: "#09142f",
+  appThemeColor: "#001D4E",
   secondaryColor: "#01E5C0",
   white: "#ffffff",
   grey: "#7F7D7A",
@@ -24,5 +24,7 @@ const Colors = {
 
   borderColor1: "#02B5F7"
 }
+
+// 09142f
 
 export default Colors

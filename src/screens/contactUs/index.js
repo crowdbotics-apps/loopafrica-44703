@@ -1,17 +1,8 @@
 import React, { useState } from "react"
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native"
-import {
-  CIRCLE_ARROW,
-  INSTAGRAM,
-  LINKEDIN,
-  FACEBOOK,
-  YOUTUBE
-} from "../../utils/images"
+import { INSTAGRAM, LINKEDIN, FACEBOOK, YOUTUBE } from "../../utils/images"
+import Header from "../../components/header"
 import styles from "./styles"
-import { ACCOUNT_SETTING } from "../../utils/constants"
-import Button from "../../components/button"
-import Logout from "../../components/logout"
-import ModalContainer from "../../components/modalContainer"
 
 const SOCIAL_MEDIAL = [
   { name: "Instagram", image: INSTAGRAM, link: "", id: 1 },
@@ -21,40 +12,9 @@ const SOCIAL_MEDIAL = [
 ]
 
 const ContactUs = props => {
-  const [logout, isLogout] = useState(false)
-  const [deleteAccount, isDeleteAccount] = useState(false)
-
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 1.5,
-          backgroundColor: "#01E5C0",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => {
-              props?.navigation?.goBack()
-            }}
-          >
-            <Image source={CIRCLE_ARROW} />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text style={styles.headerTitle}>Contact Us</Text>
-          </View>
-          <View style={{ width: "10%" }}></View>
-        </View>
-      </View>
+      <Header title={"Contact Us"} />
       <View style={{ flex: 8.5 }}>
         <View style={{ width: "90%", alignSelf: "center", marginTop: 30 }}>
           <ScrollView>
@@ -77,7 +37,7 @@ const ContactUs = props => {
 
             <TouchableOpacity style={[styles.commonBtnWpr, styles.bgEmail]}>
               <Text style={[styles.numberTxt, styles.emailTxt]}>
-              Care@loopprimarycare
+                Care@loopprimarycare
               </Text>
             </TouchableOpacity>
 

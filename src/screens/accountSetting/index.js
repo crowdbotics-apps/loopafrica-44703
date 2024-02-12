@@ -10,6 +10,7 @@ import { ACCOUNT_SETTING } from "../../utils/constants"
 import Button from "../../components/button"
 import Logout from "../../components/logout"
 import ModalContainer from "../../components/modalContainer"
+import Header from "../../components/header"
 
 const AccountSetting = props => {
   const [logout, isLogout] = useState(false)
@@ -17,35 +18,7 @@ const AccountSetting = props => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 1.5,
-          backgroundColor: "#01E5C0",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => {
-              props?.navigation?.goBack()
-            }}
-          >
-            <Image source={CIRCLE_ARROW} />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text style={styles.headerTitle}>Account Settings</Text>
-          </View>
-          <View style={{ width: "10%" }}></View>
-        </View>
-      </View>
+      <Header title={"Account Settings"} />
       <View style={{ flex: 8.5 }}>
         <View style={styles.userProfileWpr}>
           <Image source={DEFAULT_USER} resizeMode="contain" />

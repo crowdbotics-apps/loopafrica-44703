@@ -1,15 +1,8 @@
 import React, { useState } from "react"
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native"
-import {
-  CIRCLE_ARROW,
-  ARROW_RIGHT_BLUE,
-  DEFAULT_USER
-} from "../../utils/images"
 import styles from "./styles"
-import { ACCOUNT_SETTING } from "../../utils/constants"
 import Button from "../../components/button"
-import Logout from "../../components/logout"
-import ModalContainer from "../../components/modalContainer"
+import Header from "../../components/header"
 
 const DESC = [
   { value: "Bi Weekly consultations with a Nigerian based doctor", id: "1" },
@@ -28,40 +21,9 @@ const DESC = [
 ]
 
 const Welcome = props => {
-  const [logout, isLogout] = useState(false)
-  const [deleteAccount, isDeleteAccount] = useState(false)
-
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flex: 1.5,
-          backgroundColor: "#01E5C0",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => {
-              props?.navigation?.goBack()
-            }}
-          >
-            <Image source={CIRCLE_ARROW} />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Text style={styles.headerTitle}>Your Plan</Text>
-          </View>
-          <View style={{ width: "10%" }}></View>
-        </View>
-      </View>
+      <Header title={"Your Plan"} />
       <View style={{ flex: 8.5 }}>
         <View style={{ width: "90%", alignSelf: "center" }}>
           <ScrollView>
@@ -74,7 +36,11 @@ const Welcome = props => {
               Loop Standard Plan
             </Text>
             <View style={{ width: "80%", alignSelf: "center" }}>
-              <Text style={[styles.getTxt, { marginTop: 30, marginBottom: 10 }]}>You get..</Text>
+              <Text
+                style={[styles.getTxt, { marginTop: 30, marginBottom: 10 }]}
+              >
+                You get..
+              </Text>
               {DESC.map((obj, index) => {
                 return (
                   <View
@@ -82,12 +48,12 @@ const Welcome = props => {
                       flexDirection: "row",
                       marginTop: 10,
                       alignItems: "flex-start",
-                      justifyContent:'flex-start',
+                      justifyContent: "flex-start",
                       width: "100%"
                     }}
                   >
                     <View style={styles.dotStyle} />
-                    <View style={{bottom: 10}}>
+                    <View style={{ bottom: 10 }}>
                       <Text style={styles.pointTxt}>{obj?.value}</Text>
                     </View>
                   </View>
@@ -99,7 +65,6 @@ const Welcome = props => {
               name={"Get Your Medkit"}
               nameStyle={styles.nameStyle}
               btnStyle={{ width: "100%", alignSelf: "center" }}
-              handleOnpress={() => isLogout(true)}
             />
           </ScrollView>
         </View>
