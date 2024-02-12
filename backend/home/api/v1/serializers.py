@@ -324,9 +324,19 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
+    name = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='User'
+    )
+    email = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='User'
+    )
     class Meta:
         model = Feedback
-        fields = '__all__'
+        fields = ['user_id', 'name', 'email', 'subject', 'message', 'replied', 'reply_message']
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
