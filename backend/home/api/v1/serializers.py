@@ -40,6 +40,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ['user_type']
 
 class PatientInfoSerializer(serializers.ModelSerializer):
+    support_needed = serializers.MultipleChoiceField(choices=PatientInfo.SUPPORT_CHOICES, required=False, allow_blank=True, allow_null=True, write_only=True)
     class Meta:
         model = PatientInfo
         fields = ['patient_id', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'support_needed']
@@ -199,7 +200,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
             token=PasswordResetTokenGenerator().make_token(user)
             msg = render_to_string("email/resetpassword.txt", {'uid': uid, 'token': token, 'site_url': os.environ.get('SITE_URL')})
             data={'subject':'Reset Password', 'body':msg, 'to_email':email}
-            Util.send_email(data)
+            #Util.send_email(data)
             return attrs
         else:
             raise serializers.ValidationError(_("You are not a registered user"))

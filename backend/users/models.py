@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
+from multiselectfield import MultiSelectField
 from django.utils.translation import gettext_lazy as _
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -117,7 +118,7 @@ class PatientInfo(models.Model):
     age_range = models.CharField(max_length=255, choices=AGE_CHOICES, null=True, blank=True)
     health_today = models.CharField(max_length=255, choices=HEALTH_CHOICES, null=True, blank=True)
     busy_schedule = models.CharField(max_length=255, choices=BUSY_CHOICES, null=True, blank=True)
-    support_needed = models.CharField(max_length=255, choices=SUPPORT_CHOICES, null=True, blank=True)
+    support_needed = MultiSelectField(max_length=255, choices=SUPPORT_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return f"Patient Info for {self.user.username}"
