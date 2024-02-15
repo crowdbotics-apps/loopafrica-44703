@@ -89,6 +89,175 @@ function api_v1_user_profiles_update_profile_create(payload) {
 function modules_contact_us_contact_us_create(payload) {
   return silentseaAPI.post(`/modules/contact-us/contact_us/`)
 }
+function modules_inventory_management_category_list(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/category/`)
+}
+function modules_inventory_management_category_create(payload) {
+  return silentseaAPI.post(`/modules/inventory-management/category/`, payload)
+}
+function modules_inventory_management_category_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/inventory-management/category/${payload.id}/`
+  )
+}
+function modules_inventory_management_category_update(payload) {
+  return silentseaAPI.put(
+    `/modules/inventory-management/category/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_category_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/inventory-management/category/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_category_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/inventory-management/category/${payload.id}/`
+  )
+}
+function modules_inventory_management_invoice_list(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/invoice/`)
+}
+function modules_inventory_management_invoice_create(payload) {
+  return silentseaAPI.post(`/modules/inventory-management/invoice/`, payload)
+}
+function modules_inventory_management_invoice_item_list(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/invoice-item/`)
+}
+function modules_inventory_management_invoice_item_create(payload) {
+  return silentseaAPI.post(
+    `/modules/inventory-management/invoice-item/`,
+    payload
+  )
+}
+function modules_inventory_management_invoice_item_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/inventory-management/invoice-item/${payload.id}/`
+  )
+}
+function modules_inventory_management_invoice_item_update(payload) {
+  return silentseaAPI.put(
+    `/modules/inventory-management/invoice-item/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_invoice_item_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/inventory-management/invoice-item/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_invoice_item_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/inventory-management/invoice-item/${payload.id}/`
+  )
+}
+function modules_inventory_management_invoice_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/inventory-management/invoice/${payload.id}/`
+  )
+}
+function modules_inventory_management_invoice_update(payload) {
+  return silentseaAPI.put(
+    `/modules/inventory-management/invoice/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_invoice_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/inventory-management/invoice/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_invoice_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/inventory-management/invoice/${payload.id}/`
+  )
+}
+function modules_inventory_management_product_list(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/product/`)
+}
+function modules_inventory_management_product_create(payload) {
+  return silentseaAPI.post(`/modules/inventory-management/product/`, payload)
+}
+function modules_inventory_management_product_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/inventory-management/product/${payload.id}/`
+  )
+}
+function modules_inventory_management_product_update(payload) {
+  return silentseaAPI.put(
+    `/modules/inventory-management/product/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_product_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/inventory-management/product/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_product_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/inventory-management/product/${payload.id}/`
+  )
+}
+function modules_inventory_management_stock_list(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/stock/`)
+}
+function modules_inventory_management_stock_create(payload) {
+  return silentseaAPI.post(`/modules/inventory-management/stock/`, payload)
+}
+function modules_inventory_management_stock_retrieve(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/stock/${payload.id}/`)
+}
+function modules_inventory_management_stock_update(payload) {
+  return silentseaAPI.put(
+    `/modules/inventory-management/stock/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_stock_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/inventory-management/stock/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_stock_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/inventory-management/stock/${payload.id}/`
+  )
+}
+function modules_inventory_management_supplier_list(payload) {
+  return silentseaAPI.get(`/modules/inventory-management/supplier/`)
+}
+function modules_inventory_management_supplier_create(payload) {
+  return silentseaAPI.post(`/modules/inventory-management/supplier/`, payload)
+}
+function modules_inventory_management_supplier_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/inventory-management/supplier/${payload.id}/`
+  )
+}
+function modules_inventory_management_supplier_update(payload) {
+  return silentseaAPI.put(
+    `/modules/inventory-management/supplier/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_supplier_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/inventory-management/supplier/${payload.id}/`,
+    payload
+  )
+}
+function modules_inventory_management_supplier_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/inventory-management/supplier/${payload.id}/`
+  )
+}
 function modules_privacy_policy_list(payload) {
   return silentseaAPI.get(`/modules/privacy-policy/`)
 }
@@ -211,6 +380,42 @@ export const apiService = {
   api_v1_user_profiles_profile_retrieve,
   api_v1_user_profiles_update_profile_create,
   modules_contact_us_contact_us_create,
+  modules_inventory_management_category_list,
+  modules_inventory_management_category_create,
+  modules_inventory_management_category_retrieve,
+  modules_inventory_management_category_update,
+  modules_inventory_management_category_partial_update,
+  modules_inventory_management_category_destroy,
+  modules_inventory_management_invoice_list,
+  modules_inventory_management_invoice_create,
+  modules_inventory_management_invoice_item_list,
+  modules_inventory_management_invoice_item_create,
+  modules_inventory_management_invoice_item_retrieve,
+  modules_inventory_management_invoice_item_update,
+  modules_inventory_management_invoice_item_partial_update,
+  modules_inventory_management_invoice_item_destroy,
+  modules_inventory_management_invoice_retrieve,
+  modules_inventory_management_invoice_update,
+  modules_inventory_management_invoice_partial_update,
+  modules_inventory_management_invoice_destroy,
+  modules_inventory_management_product_list,
+  modules_inventory_management_product_create,
+  modules_inventory_management_product_retrieve,
+  modules_inventory_management_product_update,
+  modules_inventory_management_product_partial_update,
+  modules_inventory_management_product_destroy,
+  modules_inventory_management_stock_list,
+  modules_inventory_management_stock_create,
+  modules_inventory_management_stock_retrieve,
+  modules_inventory_management_stock_update,
+  modules_inventory_management_stock_partial_update,
+  modules_inventory_management_stock_destroy,
+  modules_inventory_management_supplier_list,
+  modules_inventory_management_supplier_create,
+  modules_inventory_management_supplier_retrieve,
+  modules_inventory_management_supplier_update,
+  modules_inventory_management_supplier_partial_update,
+  modules_inventory_management_supplier_destroy,
   modules_privacy_policy_list,
   modules_privacy_policy_create,
   modules_privacy_policy_retrieve,
