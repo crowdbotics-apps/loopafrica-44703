@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "860c8cfc05ab4e9c0d98c465bdb4f6e20baf2fd358c3b63917dbb2dc8c7b15a5"
+            "sha256": "f74e843e7f14959ea81e9b7adf3110b2dd793be92b08eadf268df0083517faa3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -366,6 +366,15 @@
             "index": "pypi",
             "version": "==0.1.12"
         },
+        "django-phonenumber-field": {
+            "hashes": [
+                "sha256:bc6eaa49d1f9d870944f5280258db511e3a1ba5e2fbbed255488dceacae45d06",
+                "sha256:f9cdb3de085f99c249328293a3b93d4e5fa440c0c8e3b99eb0d0f54748629797"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==7.3.0"
+        },
         "django-push-notifications": {
             "hashes": [
                 "sha256:2059bcd47b565ec72827630ae023e8c070f7ef10f87a0e6f523e2b764ef3a52d",
@@ -436,11 +445,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:60e89e5c0b584e285a7db05eceba35011a241954afdab2853cb246c8a56700a2",
-                "sha256:b7f76bb1b2ac4cdc54442d955e36e477c387000f31ce46887fb9722a041be60b"
+                "sha256:2db4b60ef93d247a8fe5518d01ebafa8df3a5dffd40cbb9577b25c45b04a9952",
+                "sha256:8631f712e85ae9208352442f74537927a92c439b83125f83e4798e5716764cc9"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==23.1.0"
+            "version": "==23.2.0"
         },
         "filelock": {
             "hashes": [
@@ -455,11 +464,11 @@
                 "grpc"
             ],
             "hashes": [
-                "sha256:08ed79ed8e93e329de5e3e7452746b734e6bf8438d8d64dd3319d21d3164890c",
-                "sha256:de7ef0450faec7c75e0aea313f29ac870fdc44cfaec9d6499a9a17305980ef66"
+                "sha256:610c5b90092c360736baccf17bd3efbcb30dd380e7a6dc28a71059edb8bd0d8e",
+                "sha256:9df18a1f87ee0df0bc4eea2770ebc4228392d8cc4066655b320e2cfccb15db95"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==2.17.0"
+            "version": "==2.17.1"
         },
         "google-auth": {
             "hashes": [
@@ -755,6 +764,14 @@
             "index": "pypi",
             "markers": "python_version >= '3.7'",
             "version": "==23.2"
+        },
+        "phonenumbers": {
+            "hashes": [
+                "sha256:175fcaa89780c9cb6e089fe61de960396c9fc0c01845aea26400975fb10a8ea8",
+                "sha256:273a969a863e9e38d4944b26fc277f408dc9aa84faa04996266efa4021adea00"
+            ],
+            "index": "pypi",
+            "version": "==8.13.30"
         },
         "pillow": {
             "hashes": [
