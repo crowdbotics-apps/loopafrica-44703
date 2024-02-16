@@ -137,7 +137,7 @@ class Doctor(models.Model):
     specialized = models.TextField(null=True, blank=True)
     qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
     last_updated_date = models.DateTimeField(auto_now=True)
-    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')    
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')
 
     def __str__(self):
         return f"Doctor Info for {self.user.username}"
