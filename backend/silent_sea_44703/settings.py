@@ -82,6 +82,8 @@ LOCAL_APPS = [
     'modules.django_inventory_management.inventory_management',
     'modules.hospital_operations.pharmacy',
     'modules.hospital_operations.emr',
+    'modules.django_instructor_profile.instructor_profile',
+    'modules.django_doctor_profile.doctor_profile',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
