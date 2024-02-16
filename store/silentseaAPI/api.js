@@ -26,6 +26,15 @@ function api_v1_appointments_partial_update(payload) {
 function api_v1_appointments_destroy(payload) {
   return silentseaAPI.delete(`/api/v1/appointments/${payload.id}/`)
 }
+function api_v1_edit_user_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/edit-user/${payload.id}/`)
+}
+function api_v1_edit_user_update(payload) {
+  return silentseaAPI.put(`/api/v1/edit-user/${payload.id}/`, payload)
+}
+function api_v1_edit_user_partial_update(payload) {
+  return silentseaAPI.patch(`/api/v1/edit-user/${payload.id}/`, payload)
+}
 function api_v1_feedback_list(payload) {
   return silentseaAPI.get(`/api/v1/feedback/`)
 }
@@ -49,6 +58,9 @@ function api_v1_login_create(payload) {
 }
 function api_v1_signup_create(payload) {
   return silentseaAPI.post(`/api/v1/signup/`, payload)
+}
+function api_v1_signup_with_email_create(payload) {
+  return silentseaAPI.post(`/api/v1/signup-with-email/`, payload)
 }
 function api_v1_update_profile_pic_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/update-profile-pic/${payload.id}/`)
@@ -88,6 +100,58 @@ function api_v1_user_profiles_update_profile_create(payload) {
 }
 function modules_contact_us_contact_us_create(payload) {
   return silentseaAPI.post(`/modules/contact-us/contact_us/`)
+}
+function modules_doctor_profile_doctors_list(payload) {
+  return silentseaAPI.get(`/modules/doctor-profile/doctors/`)
+}
+function modules_doctor_profile_doctors_create(payload) {
+  return silentseaAPI.post(`/modules/doctor-profile/doctors/`, payload)
+}
+function modules_doctor_profile_doctors_retrieve(payload) {
+  return silentseaAPI.get(`/modules/doctor-profile/doctors/${payload.id}/`)
+}
+function modules_doctor_profile_doctors_update(payload) {
+  return silentseaAPI.put(
+    `/modules/doctor-profile/doctors/${payload.id}/`,
+    payload
+  )
+}
+function modules_doctor_profile_doctors_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/doctor-profile/doctors/${payload.id}/`,
+    payload
+  )
+}
+function modules_doctor_profile_doctors_destroy(payload) {
+  return silentseaAPI.delete(`/modules/doctor-profile/doctors/${payload.id}/`)
+}
+function modules_instructor_profile_instructors_list(payload) {
+  return silentseaAPI.get(`/modules/instructor-profile/instructors/`)
+}
+function modules_instructor_profile_instructors_create(payload) {
+  return silentseaAPI.post(`/modules/instructor-profile/instructors/`, payload)
+}
+function modules_instructor_profile_instructors_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/instructor-profile/instructors/${payload.id}/`
+  )
+}
+function modules_instructor_profile_instructors_update(payload) {
+  return silentseaAPI.put(
+    `/modules/instructor-profile/instructors/${payload.id}/`,
+    payload
+  )
+}
+function modules_instructor_profile_instructors_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/instructor-profile/instructors/${payload.id}/`,
+    payload
+  )
+}
+function modules_instructor_profile_instructors_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/instructor-profile/instructors/${payload.id}/`
+  )
 }
 function modules_inventory_management_category_list(payload) {
   return silentseaAPI.get(`/modules/inventory-management/category/`)
@@ -360,6 +424,9 @@ export const apiService = {
   api_v1_appointments_update,
   api_v1_appointments_partial_update,
   api_v1_appointments_destroy,
+  api_v1_edit_user_retrieve,
+  api_v1_edit_user_update,
+  api_v1_edit_user_partial_update,
   api_v1_feedback_list,
   api_v1_feedback_create,
   api_v1_feedback_retrieve,
@@ -368,6 +435,7 @@ export const apiService = {
   api_v1_feedback_destroy,
   api_v1_login_create,
   api_v1_signup_create,
+  api_v1_signup_with_email_create,
   api_v1_update_profile_pic_retrieve,
   api_v1_update_profile_pic_update,
   api_v1_update_profile_pic_partial_update,
@@ -380,6 +448,18 @@ export const apiService = {
   api_v1_user_profiles_profile_retrieve,
   api_v1_user_profiles_update_profile_create,
   modules_contact_us_contact_us_create,
+  modules_doctor_profile_doctors_list,
+  modules_doctor_profile_doctors_create,
+  modules_doctor_profile_doctors_retrieve,
+  modules_doctor_profile_doctors_update,
+  modules_doctor_profile_doctors_partial_update,
+  modules_doctor_profile_doctors_destroy,
+  modules_instructor_profile_instructors_list,
+  modules_instructor_profile_instructors_create,
+  modules_instructor_profile_instructors_retrieve,
+  modules_instructor_profile_instructors_update,
+  modules_instructor_profile_instructors_partial_update,
+  modules_instructor_profile_instructors_destroy,
   modules_inventory_management_category_list,
   modules_inventory_management_category_create,
   modules_inventory_management_category_retrieve,
