@@ -84,6 +84,7 @@ LOCAL_APPS = [
     'modules.hospital_operations.emr',
     'modules.django_instructor_profile.instructor_profile',
     'modules.django_doctor_profile.doctor_profile',
+    'modules.django_patient_profile.patient_profile',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
