@@ -322,6 +322,30 @@ function modules_inventory_management_supplier_destroy(payload) {
     `/modules/inventory-management/supplier/${payload.id}/`
   )
 }
+function modules_patient_profile_patient_list(payload) {
+  return silentseaAPI.get(`/modules/patient-profile/patient/`)
+}
+function modules_patient_profile_patient_create(payload) {
+  return silentseaAPI.post(`/modules/patient-profile/patient/`, payload)
+}
+function modules_patient_profile_patient_retrieve(payload) {
+  return silentseaAPI.get(`/modules/patient-profile/patient/${payload.id}/`)
+}
+function modules_patient_profile_patient_update(payload) {
+  return silentseaAPI.put(
+    `/modules/patient-profile/patient/${payload.id}/`,
+    payload
+  )
+}
+function modules_patient_profile_patient_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/patient-profile/patient/${payload.id}/`,
+    payload
+  )
+}
+function modules_patient_profile_patient_destroy(payload) {
+  return silentseaAPI.delete(`/modules/patient-profile/patient/${payload.id}/`)
+}
 function modules_privacy_policy_list(payload) {
   return silentseaAPI.get(`/modules/privacy-policy/`)
 }
@@ -496,6 +520,12 @@ export const apiService = {
   modules_inventory_management_supplier_update,
   modules_inventory_management_supplier_partial_update,
   modules_inventory_management_supplier_destroy,
+  modules_patient_profile_patient_list,
+  modules_patient_profile_patient_create,
+  modules_patient_profile_patient_retrieve,
+  modules_patient_profile_patient_update,
+  modules_patient_profile_patient_partial_update,
+  modules_patient_profile_patient_destroy,
   modules_privacy_policy_list,
   modules_privacy_policy_create,
   modules_privacy_policy_retrieve,
