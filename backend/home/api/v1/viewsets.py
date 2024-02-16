@@ -2,7 +2,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
@@ -13,11 +13,13 @@ from rest_framework.decorators import action
 
 from home.api.v1.serializers import (
     SignupSerializer,
+    SignupWithEmailSerializer,
     UserSerializer,
+    EditUserSerializer,
     UserProfileUpdateSerializer,
     FeedbackSerializer,
     AppointmentSerializer,
-    UserProListSerializer
+    UserProListSerializer,
 )
 
 
@@ -25,6 +27,16 @@ class SignupViewSet(ModelViewSet):
     serializer_class = SignupSerializer
     http_method_names = ["post"]
 
+class SignUpWithEmailView(CreateAPIView):
+    serializer_class = SignupWithEmailSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        user_serializer = UserSerializer(user)
+        return Response({"token": token.key, "user": user_serializer.data})
 
 class LoginViewSet(ViewSet):
     """Based on rest_framework.authtoken.views.ObtainAuthToken"""
@@ -40,7 +52,25 @@ class LoginViewSet(ViewSet):
         token, created = Token.objects.get_or_create(user=user)
         user_serializer = UserSerializer(user)
         return Response({"token": token.key, "user": user_serializer.data})
+    
+class EditUserView(RetrieveUpdateAPIView, UpdateModelMixin):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = EditUserSerializer
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            return Response({'detail': 'Authentication required.'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
 class UserProfileUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

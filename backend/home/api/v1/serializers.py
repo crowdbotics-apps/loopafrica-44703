@@ -54,7 +54,70 @@ class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
         fields = ['age', 'address', 'about_instructor', 'specialized', 'qualification']
+
+class SignupWithEmailSerializer(serializers.ModelSerializer):
+    confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('name', 'email', 'password', 'confirm_password')
         
+        extra_kwargs = {
+            'password': {
+                'write_only': True,
+                'style': {
+                    'input_type': 'password'
+                }
+            },
+            'email': {
+                'required': True,
+                'allow_blank': False,
+            }
+        }
+
+    def validate_email(self, email):
+        email = get_adapter().clean_email(email)
+        if allauth_settings.UNIQUE_EMAIL:
+            if email and email_address_exists(email):
+                raise serializers.ValidationError(_("A user is already registered with this e-mail address."))
+        return email
+
+    def validate(self, attrs):
+        password = attrs.get('password')
+        confirm_password = attrs.get('confirm_password')
+        if password != confirm_password:
+            raise serializers.ValidationError(_("Password and Confirm Password don't match"))
+        return attrs
+
+    def create(self, validated_data):        
+
+        user = User.objects.create(
+            email=validated_data.get('email'),
+            name=validated_data.get('name'),            
+            username=generate_unique_username([
+                validated_data.get('name'),
+                validated_data.get('email'),
+                'user'
+            ])
+        )
+        user.set_password(validated_data.get('password'))
+        user.save()
+                    
+        request = self._get_request()
+        setup_user_email(request, user, [])
+        return user
+
+    def _get_request(self):
+        request = self.context.get('request')
+        if request and not isinstance(request, HttpRequest) and hasattr(request, '_request'):
+            request = request._request
+        return request
+
+    def save(self, request=None):
+        """rest_auth passes request so we must override to accept it"""
+        return super().save()
+
+
 class SignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
     profile = UserProfileSerializer()
@@ -180,7 +243,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'full_name','phone_number', 'gender', 'profile_picture']
 
-
 class PasswordSerializer(PasswordResetSerializer):
     """Custom serializer for rest_auth to solve reset password error"""
     password_reset_form_class = ResetPasswordForm
@@ -244,9 +306,14 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return instance  
 
 class EditUserSerializer(serializers.ModelSerializer):
+    profile = UserProfileSerializer()
+    patient_info = PatientInfoSerializer(required=False)
+    doctor_info = DoctorSerializer(required=False)
+    instructor_info = InstructorSerializer(required=False)
+
     class Meta:
-        model=User
-        fields=['full_name', 'gender', 'email', 'phone_number' , 'linkedin']
+        model = User
+        fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'dob', 'profile', 'patient_info', 'doctor_info', 'instructor_info')
  
     def validate_username(self, value):
         if self.instance.username !=value:
@@ -261,25 +328,36 @@ class EditUserSerializer(serializers.ModelSerializer):
         return value
    
     def update(self, instance, validated_data):
- 
+        user_profile_data = validated_data.pop('profile', None)
+        patient_info_data = validated_data.pop('patient_info', None)
+        doctor_info_data = validated_data.pop('doctor_info', None)
+        instructor_info_data = validated_data.pop('instructor_info', None)
+
         instance.name = validated_data.get('name', instance.name)
-        # instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.full_name = validated_data.get('full_name', instance.full_name)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
         instance.gender = validated_data.get('gender', instance.gender)
-        #instance.address = validated_data.get('address', instance.address)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
-        instance.linkedin = validated_data.get('linkedin', instance.linkedin)
- 
+        instance.dob = validated_data.get('dob', instance.dob)
         instance.save()
- 
-        old_email= self.instance.email
-        email=validated_data.get('email', instance.email)
-        if email != old_email:
-            instance.email = email
-            instance.isverified = False
-            instance.save()
-        return instance  
+
+        if user_profile_data:
+            if user_profile_data['user_type']:
+                user_type = user_profile_data.get('user_type')
+                UserProfile.objects.create(user=instance, user_type=user_type)
+        
+        if patient_info_data:
+            PatientInfo.objects.create(user=instance, **patient_info_data)
+
+        if doctor_info_data:
+            Doctor.objects.create(user=instance, **doctor_info_data)
+
+        if instructor_info_data:
+            Instructor.objects.create(user=instance, **instructor_info_data)
+
+        return instance
  
 class AvatarSerializer(serializers.ModelSerializer):
  
@@ -296,7 +374,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     avatar_signed_url = serializers.SerializerMethodField()
     class Meta:
         model=User
-        fields=['full_name', 'gender', 'email', 'phone_number', 'avatar', 'avatar_signed_url']
+        fields=['name', 'full_name', 'gender', 'email', 'phone_number', 'avatar', 'avatar_signed_url']
  
     def get_avatar_signed_url(self, obj):
             avatar_url = obj.avatar.url if obj.avatar else None  # Assuming 'avatar' is a CharField containing the full URL
