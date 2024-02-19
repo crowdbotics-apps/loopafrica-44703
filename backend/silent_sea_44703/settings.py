@@ -89,8 +89,6 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
-    # 'dj_rest_auth',
-    # 'dj_rest_auth.registration',
     'rest_auth',
     'rest_auth.registration',
     'bootstrap4',
