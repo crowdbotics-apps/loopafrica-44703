@@ -13,14 +13,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator,default_token_generator
 #from silent_sea_44703.utils import Util
 from django.template.loader import render_to_string
-import os
 import requests
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment
-
+from modules.two_factor_authentication.twofactorauth.utils import Util
 
 import os
 import boto3
@@ -262,7 +261,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
             token=PasswordResetTokenGenerator().make_token(user)
             msg = render_to_string("email/resetpassword.txt", {'uid': uid, 'token': token, 'site_url': os.environ.get('SITE_URL')})
             data={'subject':'Reset Password', 'body':msg, 'to_email':email}
-            #Util.send_email(data)
+            Util.send_email(data)
             return attrs
         else:
             raise serializers.ValidationError(_("You are not a registered user"))
