@@ -5,6 +5,6 @@ from .models import TwoFactorAuth, Verify
 class AdminPhoneNumber(admin.ModelAdmin):
     list_display = ['id', 'email']
 
-@admin.register(Verify)
-class AdminPhoneNumber(admin.ModelAdmin):
-    list_display = ['id', 'email', 'code']
+# @admin.register(Verify)
+# class AdminPhoneNumber(admin.ModelAdmin):
+#     list_display = ['id', 'email', 'code']

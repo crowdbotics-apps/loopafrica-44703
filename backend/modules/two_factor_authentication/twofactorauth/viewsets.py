@@ -23,8 +23,6 @@ class PhoneNumberViewset(ModelViewSet):
     queryset = TwoFactorAuth.objects.all()
     serializer_class = PhoneNumberSerializer
 
-   
-
     @action(methods=['post'], detail=False)
     def send_otp(self, request):
         """

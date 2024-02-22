@@ -86,6 +86,7 @@ LOCAL_APPS = [
     'modules.django_doctor_profile.doctor_profile',
     'modules.django_patient_profile.patient_profile',
     'modules.two_factor_authentication.twofactorauth',
+    
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
