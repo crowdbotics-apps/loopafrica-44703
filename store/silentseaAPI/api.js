@@ -56,6 +56,9 @@ function api_v1_feedback_destroy(payload) {
 function api_v1_login_create(payload) {
   return silentseaAPI.post(`/api/v1/login/`, payload)
 }
+function api_v1_sendresetpasswordemail_create(payload) {
+  return silentseaAPI.post(`/api/v1/sendresetpasswordemail/`)
+}
 function api_v1_signup_create(payload) {
   return silentseaAPI.post(`/api/v1/signup/`, payload)
 }
@@ -100,58 +103,6 @@ function api_v1_user_profiles_update_profile_create(payload) {
 }
 function modules_contact_us_contact_us_create(payload) {
   return silentseaAPI.post(`/modules/contact-us/contact_us/`)
-}
-function modules_doctor_profile_doctors_list(payload) {
-  return silentseaAPI.get(`/modules/doctor-profile/doctors/`)
-}
-function modules_doctor_profile_doctors_create(payload) {
-  return silentseaAPI.post(`/modules/doctor-profile/doctors/`, payload)
-}
-function modules_doctor_profile_doctors_retrieve(payload) {
-  return silentseaAPI.get(`/modules/doctor-profile/doctors/${payload.id}/`)
-}
-function modules_doctor_profile_doctors_update(payload) {
-  return silentseaAPI.put(
-    `/modules/doctor-profile/doctors/${payload.id}/`,
-    payload
-  )
-}
-function modules_doctor_profile_doctors_partial_update(payload) {
-  return silentseaAPI.patch(
-    `/modules/doctor-profile/doctors/${payload.id}/`,
-    payload
-  )
-}
-function modules_doctor_profile_doctors_destroy(payload) {
-  return silentseaAPI.delete(`/modules/doctor-profile/doctors/${payload.id}/`)
-}
-function modules_instructor_profile_instructors_list(payload) {
-  return silentseaAPI.get(`/modules/instructor-profile/instructors/`)
-}
-function modules_instructor_profile_instructors_create(payload) {
-  return silentseaAPI.post(`/modules/instructor-profile/instructors/`, payload)
-}
-function modules_instructor_profile_instructors_retrieve(payload) {
-  return silentseaAPI.get(
-    `/modules/instructor-profile/instructors/${payload.id}/`
-  )
-}
-function modules_instructor_profile_instructors_update(payload) {
-  return silentseaAPI.put(
-    `/modules/instructor-profile/instructors/${payload.id}/`,
-    payload
-  )
-}
-function modules_instructor_profile_instructors_partial_update(payload) {
-  return silentseaAPI.patch(
-    `/modules/instructor-profile/instructors/${payload.id}/`,
-    payload
-  )
-}
-function modules_instructor_profile_instructors_destroy(payload) {
-  return silentseaAPI.delete(
-    `/modules/instructor-profile/instructors/${payload.id}/`
-  )
 }
 function modules_inventory_management_category_list(payload) {
   return silentseaAPI.get(`/modules/inventory-management/category/`)
@@ -322,91 +273,6 @@ function modules_inventory_management_supplier_destroy(payload) {
     `/modules/inventory-management/supplier/${payload.id}/`
   )
 }
-function modules_patient_profile_patient_list(payload) {
-  return silentseaAPI.get(`/modules/patient-profile/patient/`)
-}
-function modules_patient_profile_patient_create(payload) {
-  return silentseaAPI.post(`/modules/patient-profile/patient/`, payload)
-}
-function modules_patient_profile_patient_retrieve(payload) {
-  return silentseaAPI.get(`/modules/patient-profile/patient/${payload.id}/`)
-}
-function modules_patient_profile_patient_update(payload) {
-  return silentseaAPI.put(
-    `/modules/patient-profile/patient/${payload.id}/`,
-    payload
-  )
-}
-function modules_patient_profile_patient_partial_update(payload) {
-  return silentseaAPI.patch(
-    `/modules/patient-profile/patient/${payload.id}/`,
-    payload
-  )
-}
-function modules_patient_profile_patient_destroy(payload) {
-  return silentseaAPI.delete(`/modules/patient-profile/patient/${payload.id}/`)
-}
-function modules_privacy_policy_list(payload) {
-  return silentseaAPI.get(`/modules/privacy-policy/`)
-}
-function modules_privacy_policy_create(payload) {
-  return silentseaAPI.post(`/modules/privacy-policy/`, payload)
-}
-function modules_privacy_policy_retrieve(payload) {
-  return silentseaAPI.get(`/modules/privacy-policy/${payload.id}/`)
-}
-function modules_privacy_policy_update(payload) {
-  return silentseaAPI.put(`/modules/privacy-policy/${payload.id}/`, payload)
-}
-function modules_privacy_policy_partial_update(payload) {
-  return silentseaAPI.patch(`/modules/privacy-policy/${payload.id}/`, payload)
-}
-function modules_privacy_policy_destroy(payload) {
-  return silentseaAPI.delete(`/modules/privacy-policy/${payload.id}/`)
-}
-function modules_push_notifications_notifications_list(payload) {
-  return silentseaAPI.get(`/modules/push-notifications/notifications/`)
-}
-function modules_push_notifications_notifications_create(payload) {
-  return silentseaAPI.post(
-    `/modules/push-notifications/notifications/`,
-    payload
-  )
-}
-function modules_push_notifications_notifications_retrieve(payload) {
-  return silentseaAPI.get(
-    `/modules/push-notifications/notifications/${payload.id}/`
-  )
-}
-function modules_push_notifications_notifications_destroy(payload) {
-  return silentseaAPI.delete(
-    `/modules/push-notifications/notifications/${payload.id}/`
-  )
-}
-function modules_terms_and_conditions_list(payload) {
-  return silentseaAPI.get(`/modules/terms-and-conditions/`)
-}
-function modules_terms_and_conditions_create(payload) {
-  return silentseaAPI.post(`/modules/terms-and-conditions/`, payload)
-}
-function modules_terms_and_conditions_retrieve(payload) {
-  return silentseaAPI.get(`/modules/terms-and-conditions/${payload.id}/`)
-}
-function modules_terms_and_conditions_update(payload) {
-  return silentseaAPI.put(
-    `/modules/terms-and-conditions/${payload.id}/`,
-    payload
-  )
-}
-function modules_terms_and_conditions_partial_update(payload) {
-  return silentseaAPI.patch(
-    `/modules/terms-and-conditions/${payload.id}/`,
-    payload
-  )
-}
-function modules_terms_and_conditions_destroy(payload) {
-  return silentseaAPI.delete(`/modules/terms-and-conditions/${payload.id}/`)
-}
 function rest_auth_login_create(payload) {
   return silentseaAPI.post(`/rest-auth/login/`, payload)
 }
@@ -458,6 +324,7 @@ export const apiService = {
   api_v1_feedback_partial_update,
   api_v1_feedback_destroy,
   api_v1_login_create,
+  api_v1_sendresetpasswordemail_create,
   api_v1_signup_create,
   api_v1_signup_with_email_create,
   api_v1_update_profile_pic_retrieve,
@@ -472,18 +339,6 @@ export const apiService = {
   api_v1_user_profiles_profile_retrieve,
   api_v1_user_profiles_update_profile_create,
   modules_contact_us_contact_us_create,
-  modules_doctor_profile_doctors_list,
-  modules_doctor_profile_doctors_create,
-  modules_doctor_profile_doctors_retrieve,
-  modules_doctor_profile_doctors_update,
-  modules_doctor_profile_doctors_partial_update,
-  modules_doctor_profile_doctors_destroy,
-  modules_instructor_profile_instructors_list,
-  modules_instructor_profile_instructors_create,
-  modules_instructor_profile_instructors_retrieve,
-  modules_instructor_profile_instructors_update,
-  modules_instructor_profile_instructors_partial_update,
-  modules_instructor_profile_instructors_destroy,
   modules_inventory_management_category_list,
   modules_inventory_management_category_create,
   modules_inventory_management_category_retrieve,
@@ -520,28 +375,6 @@ export const apiService = {
   modules_inventory_management_supplier_update,
   modules_inventory_management_supplier_partial_update,
   modules_inventory_management_supplier_destroy,
-  modules_patient_profile_patient_list,
-  modules_patient_profile_patient_create,
-  modules_patient_profile_patient_retrieve,
-  modules_patient_profile_patient_update,
-  modules_patient_profile_patient_partial_update,
-  modules_patient_profile_patient_destroy,
-  modules_privacy_policy_list,
-  modules_privacy_policy_create,
-  modules_privacy_policy_retrieve,
-  modules_privacy_policy_update,
-  modules_privacy_policy_partial_update,
-  modules_privacy_policy_destroy,
-  modules_push_notifications_notifications_list,
-  modules_push_notifications_notifications_create,
-  modules_push_notifications_notifications_retrieve,
-  modules_push_notifications_notifications_destroy,
-  modules_terms_and_conditions_list,
-  modules_terms_and_conditions_create,
-  modules_terms_and_conditions_retrieve,
-  modules_terms_and_conditions_update,
-  modules_terms_and_conditions_partial_update,
-  modules_terms_and_conditions_destroy,
   rest_auth_login_create,
   rest_auth_logout_retrieve,
   rest_auth_logout_create,
