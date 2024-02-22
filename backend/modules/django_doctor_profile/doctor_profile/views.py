@@ -21,9 +21,22 @@ class DoctorListCreateView(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DoctorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+    def get_object(self):
+        queryset = self.get_queryset()
+        pk = self.kwargs.get('pk')
+        try:
+            # Try to get the object by pk (primary key)
+            obj = queryset.get(pk=pk)
+        except Doctor.DoesNotExist:
+            try:
+                # If not found, try to get the object by UUID
+                obj = queryset.get(doctor_id=pk)
+            except Doctor.DoesNotExist:
+                # If still not found, raise a 404 error
+                raise generics.Http404
+        self.check_object_permissions(self.request, obj)
 
     

@@ -10,6 +10,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User, Feedback, Appointment, UserProfile
 from rest_framework.decorators import action
+from rest_framework.views import APIView
 
 from home.api.v1.serializers import (
     SignupSerializer,
@@ -20,6 +21,7 @@ from home.api.v1.serializers import (
     FeedbackSerializer,
     AppointmentSerializer,
     UserProListSerializer,
+    SendPasswordResetEmailSerializer,
 )
 
 
@@ -124,4 +126,10 @@ class UserProfileViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-    
+
+
+class SendPasswordResetEmailView(APIView):
+    def post(self, request, format=None):
+        serializer=SendPasswordResetEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'message':'Password reset link sent. Please check your email'}, status.HTTP_200_OK)

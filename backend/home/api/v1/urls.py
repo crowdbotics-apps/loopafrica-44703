@@ -10,6 +10,7 @@ from home.api.v1.viewsets import (
     AppointmentViewSet,
     UserProfileViewSet,
     SignUpWithEmailView,
+    SendPasswordResetEmailView,
 )
 
 router = DefaultRouter()
@@ -25,4 +26,5 @@ urlpatterns = [
     path('update-profile-pic/<int:pk>/', UserProfileUpdateView.as_view(), name='update-profile-pic'),
     path('signup-with-email/', SignUpWithEmailView.as_view(), name='signup-with-email'),
     path('edit-user/<int:pk>/', EditUserView.as_view(), name='edit-user'),
+    path('sendresetpasswordemail/', SendPasswordResetEmailView.as_view(), name='sendresetpasswordemail'),
 ]

@@ -85,10 +85,13 @@ LOCAL_APPS = [
     'modules.django_instructor_profile.instructor_profile',
     'modules.django_doctor_profile.doctor_profile',
     'modules.django_patient_profile.patient_profile',
+    'modules.two_factor_authentication.twofactorauth',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
+    # 'dj_rest_auth',
+    # 'dj_rest_auth.registration',
     'rest_auth',
     'rest_auth.registration',
     'bootstrap4',
@@ -206,7 +209,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -293,7 +296,7 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
     # output email to console instead of sending
     if not DEBUG:
         logging.warning("You should setup `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` env vars to send emails.")
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    #EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # GCP config 
