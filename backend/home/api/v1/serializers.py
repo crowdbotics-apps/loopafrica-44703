@@ -240,7 +240,7 @@ class AuthTokenByEmailSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'full_name','phone_number', 'gender', 'profile_picture']
+        fields = ['id', 'email', 'first_name', 'last_name', 'full_name','phone_number', 'gender', 'profile_picture']
 
 class PasswordSerializer(PasswordResetSerializer):
     """Custom serializer for rest_auth to solve reset password error"""

@@ -22,6 +22,7 @@ from home.api.v1.serializers import (
     AppointmentSerializer,
     UserProListSerializer,
     SendPasswordResetEmailSerializer,
+    ChangePasswordSerializer,
 )
 
 
@@ -134,3 +135,24 @@ class SendPasswordResetEmailView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response({'message':'Password reset link sent. Please check your email'}, status.HTTP_200_OK)
     
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+ 
+    def post(self, request):
+        user = request.user
+        serializer = ChangePasswordSerializer(instance=user, data=request.data)
+ 
+        if serializer.is_valid():
+            serializer.save()
+            response_data = {
+                'msg': 'Password changed successfully',
+                'data': serializer.data
+            }
+            return Response(data=response_data, status=status.HTTP_200_OK)
+        else:
+            response_data = {
+                'msg': 'Failed to change password',
+                'errors': serializer.errors
+            }
+            return Response(data=response_data, status=status.HTTP_400_BAD_REQUEST)

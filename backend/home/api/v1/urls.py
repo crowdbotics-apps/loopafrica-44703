@@ -11,6 +11,7 @@ from home.api.v1.viewsets import (
     UserProfileViewSet,
     SignUpWithEmailView,
     SendPasswordResetEmailView,
+    ChangePasswordView,
 )
 
 router = DefaultRouter()
@@ -27,4 +28,5 @@ urlpatterns = [
     path('signup-with-email/', SignUpWithEmailView.as_view(), name='signup-with-email'),
     path('edit-user/<int:pk>/', EditUserView.as_view(), name='edit-user'),
     path('sendresetpasswordemail/', SendPasswordResetEmailView.as_view(), name='sendresetpasswordemail'),
+    path('changepassword/',ChangePasswordView.as_view(), name='changepassword'),
 ]
