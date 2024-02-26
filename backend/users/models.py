@@ -124,6 +124,7 @@ class PatientInfo(models.Model):
     weight = models.FloatField(null=True, blank=True)
     blood_group = models.CharField(max_length=255, null=True, blank=True)
     disability = models.BooleanField(default=False, null=True, blank=True)
+    genotype = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"Patient Info for {self.user.username}"
