@@ -21,7 +21,6 @@ router.register("feedback", FeedbackViewSet, basename="feedback")
 router.register('appointments', AppointmentViewSet, basename='appointment')
 router.register(r'user-profiles', UserProfileViewSet, basename='user-profiles')
 
-
 urlpatterns = [
     path("", include(router.urls)),
     path('update-profile-pic/<int:pk>/', UserProfileUpdateView.as_view(), name='update-profile-pic'),
