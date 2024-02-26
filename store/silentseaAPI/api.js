@@ -26,6 +26,9 @@ function api_v1_appointments_partial_update(payload) {
 function api_v1_appointments_destroy(payload) {
   return silentseaAPI.delete(`/api/v1/appointments/${payload.id}/`)
 }
+function api_v1_changepassword_create(payload) {
+  return silentseaAPI.post(`/api/v1/changepassword/`)
+}
 function api_v1_edit_user_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/edit-user/${payload.id}/`)
 }
@@ -314,6 +317,7 @@ export const apiService = {
   api_v1_appointments_update,
   api_v1_appointments_partial_update,
   api_v1_appointments_destroy,
+  api_v1_changepassword_create,
   api_v1_edit_user_retrieve,
   api_v1_edit_user_update,
   api_v1_edit_user_partial_update,
