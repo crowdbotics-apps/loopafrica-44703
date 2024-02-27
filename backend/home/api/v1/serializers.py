@@ -427,8 +427,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 class UserProListSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    patient_info = PatientInfoSerializer(required=False)
     
     class Meta:
         model = UserProfile
-        fields = ['user', 'user_type', 'patient_info']
+        fields = ['user', 'user_type']
