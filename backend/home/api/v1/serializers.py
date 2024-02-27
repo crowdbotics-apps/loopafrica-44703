@@ -21,6 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment
 from modules.two_factor_authentication.twofactorauth.utils import Util
 
+
 import os
 import boto3
 from urllib.parse import urlparse
@@ -42,7 +43,7 @@ class PatientInfoSerializer(serializers.ModelSerializer):
     support_needed = serializers.MultipleChoiceField(choices=PatientInfo.SUPPORT_CHOICES, required=False, allow_blank=True, allow_null=True, write_only=True)
     class Meta:
         model = PatientInfo
-        fields = ['patient_id', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'support_needed']
+        fields = ['patient_id', 'title', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'blood_group', 'height', 'weight', 'blood_group', 'disability', 'genotype','support_needed']
 
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -313,25 +314,14 @@ class EditUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'dob', 'profile', 'patient_info', 'doctor_info', 'instructor_info')
- 
-    def validate_username(self, value):
-        if self.instance.username !=value:
-            if User.objects.filter(username=value).exists():
-                raise serializers.ValidationError("Username already exists")
-        return value
-   
-    def validate_email(self, value):
-        if self.instance.email != value:
-            if User.objects.filter(email=value).exists():
-                raise serializers.ValidationError("Email already exists")
-        return value
    
     def update(self, instance, validated_data):
-        user_profile_data = validated_data.pop('profile', None)
+        profile_data = validated_data.pop('profile', None)
         patient_info_data = validated_data.pop('patient_info', None)
         doctor_info_data = validated_data.pop('doctor_info', None)
         instructor_info_data = validated_data.pop('instructor_info', None)
 
+        # Update user fields
         instance.name = validated_data.get('name', instance.name)
         instance.full_name = validated_data.get('full_name', instance.full_name)
         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -342,19 +332,33 @@ class EditUserSerializer(serializers.ModelSerializer):
         instance.dob = validated_data.get('dob', instance.dob)
         instance.save()
 
-        if user_profile_data:
-            if user_profile_data['user_type']:
-                user_type = user_profile_data.get('user_type')
-                UserProfile.objects.create(user=instance, user_type=user_type)
-        
+        # Update profile if provided
+        if profile_data:
+            profile_instance, _ = UserProfile.objects.get_or_create(user=instance)
+            profile_serializer = UserProfileSerializer(profile_instance, data=profile_data, partial=True)
+            profile_serializer.is_valid(raise_exception=True)
+            profile_serializer.save()
+
+        # Update patient info if provided
         if patient_info_data:
-            PatientInfo.objects.create(user=instance, **patient_info_data)
+            patient_info_instance, _ = PatientInfo.objects.get_or_create(user=instance)
+            patient_info_serializer = PatientInfoSerializer(patient_info_instance, data=patient_info_data, partial=True)
+            patient_info_serializer.is_valid(raise_exception=True)
+            patient_info_serializer.save()
 
+        # Update doctor info if provided
         if doctor_info_data:
-            Doctor.objects.create(user=instance, **doctor_info_data)
+            doctor_info_instance, _ = Doctor.objects.get_or_create(user=instance)
+            doctor_info_serializer = DoctorSerializer(doctor_info_instance, data=doctor_info_data, partial=True)
+            doctor_info_serializer.is_valid(raise_exception=True)
+            doctor_info_serializer.save()
 
+        # Update instructor info if provided
         if instructor_info_data:
-            Instructor.objects.create(user=instance, **instructor_info_data)
+            instructor_info_instance, _ = Instructor.objects.get_or_create(user=instance)
+            instructor_info_serializer = InstructorSerializer(instructor_info_instance, data=instructor_info_data, partial=True)
+            instructor_info_serializer.is_valid(raise_exception=True)
+            instructor_info_serializer.save()
 
         return instance
  
@@ -423,6 +427,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 class UserProListSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    patient_info = PatientInfoSerializer(required=False)
+    
     class Meta:
         model = UserProfile
-        fields = ['user', 'user_type']
+        fields = ['user', 'user_type', 'patient_info']
