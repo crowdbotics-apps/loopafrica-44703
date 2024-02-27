@@ -4,7 +4,8 @@ from rest_framework import status
 from users.models import PatientInfo
 from .serializers import PatientProfileSerializer
 from rest_framework import authentication, permissions
-
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 # create your views here
 
 class PatientListCreateView(generics.ListCreateAPIView):
@@ -21,24 +22,20 @@ class PatientListCreateView(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PatientRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    # queryset = PatientInfo.objects.all()
     serializer_class = PatientProfileSerializer
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-    def get_object(self):
-        queryset = self.get_queryset()
-        pk = self.kwargs.get('pk')
-        try:
-            # Try to get the object by pk (primary key)
-            obj = queryset.get(pk=pk)
-        except PatientInfo.DoesNotExist:
-            try:
-                # If not found, try to get the object by UUID
-                obj = queryset.get(patient_id=pk)
-            except PatientInfo.DoesNotExist:
-                # If still not found, raise a 404 error
-                raise generics.Http404
-        self.check_object_permissions(self.request, obj)
-        return obj
+ 
     def get_queryset(self):
         return PatientInfo.objects.all()
+ 
+    def get_object(self):
+        queryset = self.get_queryset()
+        pk = self.kwargs.get('pk')  
+        obj = queryset.filter(user_id=pk).first()
+ 
+        if obj is None:
+            raise Http404("Patient does not exist")
+ 
+        self.check_object_permissions(self.request, obj)
+        return obj
