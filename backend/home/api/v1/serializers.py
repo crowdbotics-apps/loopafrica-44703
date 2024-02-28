@@ -237,17 +237,15 @@ class AuthTokenByEmailSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs             
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'full_name','phone_number', 'gender', 'profile_picture']
+        fields = ['id', 'email', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
 
 class PasswordSerializer(PasswordResetSerializer):
     """Custom serializer for rest_auth to solve reset password error"""
     password_reset_form_class = ResetPasswordForm
      
-
 class SendPasswordResetEmailSerializer(serializers.Serializer):
     email=serializers.EmailField(max_length=255)
     class Meta:
@@ -400,10 +398,37 @@ class UserDetailSerializer(serializers.ModelSerializer):
                 return None
             
 class UserProfilePicUpdateSerializer(serializers.ModelSerializer):
+    profile_picture_signed_url = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['id', 'profile_picture']
-
+        fields = ['id', 'profile_picture', 'profile_picture_signed_url']
+ 
+    def get_profile_picture_signed_url(self, obj):
+        profile_picture_url = obj.profile_picture.url if obj.profile_picture else None
+ 
+        if profile_picture_url:
+            parsed_url = urlparse(profile_picture_url)
+            object_key = parsed_url.path[1:]   # Remove the leading slash
+            # Generate a signed URL using the extracted object key
+            s3 = boto3.client('s3', region_name=env.str("AWS_STORAGE_REGION", ""),
+                                config=boto3.session.Config(signature_version='s3v4'))
+            expiration_time = 3600    # URL expires after 1 hour
+            signed_url = s3.generate_presigned_url(
+                'put_object', Params = {'Bucket': 'loopafrica-44703', 'Key': object_key},
+                ExpiresIn = expiration_time
+            )
+            return signed_url
+        else:
+            return None
+   
+    def update(self, instance, validated_data):
+        profile_picture = validated_data.get('profile_picture', None)
+        instance = super().update(instance, validated_data)
+        if profile_picture:
+            instance.profile_picture = profile_picture
+            instance.save()
+        return instance
+ 
 
 class FeedbackSerializer(serializers.ModelSerializer):
     name = serializers.SlugRelatedField(
