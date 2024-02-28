@@ -276,6 +276,9 @@ if USE_S3:
         "DEFAULT_FILE_STORAGE", "home.storage_backends.MediaStorage"
     )
 
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_QUERYSTRING_AUTH = False
+
 SPECTACULAR_SETTINGS = {
     # available SwaggerUI configuration parameters
     # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
