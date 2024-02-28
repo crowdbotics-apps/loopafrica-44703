@@ -276,6 +276,24 @@ function modules_inventory_management_supplier_destroy(payload) {
     `/modules/inventory-management/supplier/${payload.id}/`
   )
 }
+function patient_patient_list(payload) {
+  return silentseaAPI.get(`/patient/patient/`)
+}
+function patient_patient_create(payload) {
+  return silentseaAPI.post(`/patient/patient/`, payload)
+}
+function patient_patient_retrieve(payload) {
+  return silentseaAPI.get(`/patient/patient/${payload.id}/`)
+}
+function patient_patient_update(payload) {
+  return silentseaAPI.put(`/patient/patient/${payload.id}/`, payload)
+}
+function patient_patient_partial_update(payload) {
+  return silentseaAPI.patch(`/patient/patient/${payload.id}/`, payload)
+}
+function patient_patient_destroy(payload) {
+  return silentseaAPI.delete(`/patient/patient/${payload.id}/`)
+}
 function rest_auth_login_create(payload) {
   return silentseaAPI.post(`/rest-auth/login/`, payload)
 }
@@ -379,6 +397,12 @@ export const apiService = {
   modules_inventory_management_supplier_update,
   modules_inventory_management_supplier_partial_update,
   modules_inventory_management_supplier_destroy,
+  patient_patient_list,
+  patient_patient_create,
+  patient_patient_retrieve,
+  patient_patient_update,
+  patient_patient_partial_update,
+  patient_patient_destroy,
   rest_auth_login_create,
   rest_auth_logout_retrieve,
   rest_auth_logout_create,
