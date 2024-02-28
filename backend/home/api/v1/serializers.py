@@ -399,7 +399,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             else:
                 return None
             
-class UserProfileUpdateSerializer(serializers.ModelSerializer):
+class UserProfilePicUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'profile_picture']
@@ -427,7 +427,14 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 class UserProListSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    patient_info = serializers.SerializerMethodField()
     
     class Meta:
         model = UserProfile
-        fields = ['user', 'user_type']
+        fields = ['user', 'user_type', 'patient_info']
+
+    def get_patient_info(self, obj):
+        patient_info = PatientInfo.objects.filter(user=obj.user).first()
+        if patient_info:
+            return PatientInfoSerializer(patient_info).data
+        return None

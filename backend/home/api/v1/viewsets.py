@@ -11,13 +11,15 @@ from rest_framework.permissions import IsAuthenticated
 from users.models import User, Feedback, Appointment, UserProfile
 from rest_framework.decorators import action
 from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+
 
 from home.api.v1.serializers import (
     SignupSerializer,
     SignupWithEmailSerializer,
     UserSerializer,
     EditUserSerializer,
-    UserProfileUpdateSerializer,
+    UserProfilePicUpdateSerializer,
     FeedbackSerializer,
     AppointmentSerializer,
     UserProListSerializer,
@@ -74,11 +76,11 @@ class EditUserView(RetrieveUpdateAPIView, UpdateModelMixin):
         serializer.save()
         return Response(serializer.data)
     
-class UserProfileUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
+class UserProfilePicUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
-    serializer_class = UserProfileUpdateSerializer
+    serializer_class = UserProfilePicUpdateSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
     def update(self, request, *args, **kwargs):
@@ -112,6 +114,7 @@ class UserProfileViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        user_profile = get_object_or_404(UserProfile, user=user)
         return UserProfile.objects.filter(user=user)
 
     @action(detail=False, methods=['get'])
