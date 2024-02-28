@@ -380,7 +380,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields=['name', 'full_name', 'gender', 'email', 'phone_number', 'avatar', 'avatar_signed_url']
  
     def get_avatar_signed_url(self, obj):
-            avatar_url = obj.avatar.url if obj.avatar else None  # Assuming 'avatar' is a CharField containing the full URL
+            avatar_url = obj.avatar.url if obj.avatar else None
             # Extract the object key from the avatar URL
             if avatar_url:
                 parsed_url = urlparse(avatar_url)
@@ -392,7 +392,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
                 expiration_time = 3600  # URL expires after 1 hour
                 signed_url = s3.generate_presigned_url(
                     'get_object',
-                    Params={'Bucket': 'interview-universit-43333', 'Key': object_key},
+                    Params={'Bucket': 'loopafrica-44703', 'Key': object_key},
                     ExpiresIn=expiration_time
                 )
                 return signed_url

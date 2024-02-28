@@ -114,7 +114,6 @@ class UserProfileViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        user_profile = get_object_or_404(UserProfile, user=user)
         return UserProfile.objects.filter(user=user)
 
     @action(detail=False, methods=['get'])
