@@ -10,6 +10,15 @@ from users.models import *
 def get_upload_medRec(instance, filename):
     return os.path.join('MRO', 'medrec', str(instance.pk), filename)
 
+class Base(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    last_updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+        
 class MedicalRecord(Base):
     patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='medical_records', null=True, blank=True)
     date = models.DateField()
