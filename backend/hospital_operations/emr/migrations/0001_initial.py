@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import modules.hospital_operations.emr.models
+import hospital_operations.emr.models
 
 
 class Migration(migrations.Migration):
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('symptoms', models.TextField()),
                 ('tests_conducted', models.TextField()),
                 ('medications_prescribed', models.TextField()),
-                ('records', models.FileField(blank=True, null=True, upload_to=modules.hospital_operations.emr.models.get_upload_medRec)),
+                ('records', models.FileField(blank=True, null=True, upload_to=hospital_operations.emr.models.get_upload_medRec)),
                 ('last_updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('patient', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='medical_records', to='users.patientinfo')),
             ],

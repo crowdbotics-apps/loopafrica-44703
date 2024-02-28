@@ -4,9 +4,17 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum
-from modules.django_inventory_management.inventory_management.models import *
 from users.models import *
+from modules.django_inventory_management.inventory_management.models import Product
 
+class Base(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    last_updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+
+    class Meta:
+        abstract = True
 
 class Prescription(Base):
     patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, null=True, blank=True)

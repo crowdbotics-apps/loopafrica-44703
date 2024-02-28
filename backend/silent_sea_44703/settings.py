@@ -80,11 +80,8 @@ LOCAL_APPS = [
     'modules.django_terms_and_conditions.terms_and_conditions',
     'modules.django_push_notifications.push_notifications',
     'modules.django_inventory_management.inventory_management',
-    'modules.hospital_operations.pharmacy',
-    'modules.hospital_operations.emr',
-    'modules.django_instructor_profile.instructor_profile',
-    'modules.django_doctor_profile.doctor_profile',
-    'modules.django_patient_profile.patient_profile',
+    'hospital_operations.pharmacy',
+    'hospital_operations.emr',    
     'modules.two_factor_authentication.twofactorauth',
     
 ]
