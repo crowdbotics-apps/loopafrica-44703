@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from users.models import PatientInfo
 from home.api.v1.serializers import UserSerializer
+from users.models import Vitals
+ 
+class VitalsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vitals
+        fields = '__all__'
 
 class PatientProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()

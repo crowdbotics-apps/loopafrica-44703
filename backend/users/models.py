@@ -5,6 +5,7 @@ from multiselectfield import MultiSelectField
 from django.utils.translation import gettext_lazy as _
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils import timezone
 import uuid
 import os
 
@@ -137,6 +138,10 @@ class Doctor(models.Model):
     about_doctor = models.TextField(null=True, blank=True)
     specialized = models.TextField(null=True, blank=True)
     qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
+    available_time = models.TimeField(null=True, blank=True)
+    working_days = models.CharField(max_length=255, null=True, blank=True)
+    working_hours = models.CharField(max_length=255, null=True, blank=True) 
+    experince = models.IntegerField(null=True, blank=True)
     last_updated_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')
 
@@ -182,3 +187,22 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"Appointment for {self.user.username} with {self.doctor.user.username}"
+ 
+class Vitals(models.Model):
+    patient_info = models.ForeignKey(PatientInfo, on_delete=models.CASCADE)
+    heart_rate = models.IntegerField(null=True, blank=True)  # Heart rate in beats per minute
+    blood_status = models.CharField(null=True, blank=True, max_length=100)  # Blood pressure status like normal, high, low
+    blood_count = models.IntegerField(null=True, blank=True)  # Blood count
+    glucose_level = models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=2)  # Glucose level in mg/dL
+    weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Weight in kilograms
+    temperature = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # Temperature in Celsius
+    pulse = models.IntegerField(null=True, blank=True)  # Pulse count
+    date = models.DateField(default=timezone.now, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='%(class)s_last_updated_by', null=True, blank=True)
+    last_updated_at = models.DateTimeField(null=True, blank=True)
+ 
+    def __str__(self):
+        return f"Vitals of {self.patient_info.user.username} on {self.date}"
+    

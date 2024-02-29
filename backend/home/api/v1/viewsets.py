@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User, Feedback, Appointment, UserProfile
+from users.models import User, Feedback, Appointment, UserProfile, Doctor
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -25,6 +25,7 @@ from home.api.v1.serializers import (
     UserProListSerializer,
     SendPasswordResetEmailSerializer,
     ChangePasswordSerializer,
+    DoctorSerializer,
 )
 
 
@@ -130,7 +131,15 @@ class UserProfileViewSet(ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
+class DoctorViewSet(ModelViewSet):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
 
+    def list(self, request):
+        queryset = Doctor.objects.all()  # Get all doctors
+        serializer = DoctorSerializer(queryset, many=True)  # Serialize all doctors
+        return Response(serializer.data)
+    
 class SendPasswordResetEmailView(APIView):
     def post(self, request, format=None):
         serializer=SendPasswordResetEmailSerializer(data=request.data)
