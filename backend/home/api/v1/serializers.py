@@ -389,9 +389,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
                                 config=boto3.session.Config(signature_version='s3v4'))
                 expiration_time = 3600  # URL expires after 1 hour
                 signed_url = s3.generate_presigned_url(
-                    'get_object',
-                    Params={'Bucket': 'loopafrica-44703', 'Key': object_key},
-                    ExpiresIn=expiration_time
+                    'get_object', Params = {'Bucket': 'loopafrica-44703', 'Key': object_key},
+                    ExpiresIn = expiration_time, HttpMethod='GET'
                 )
                 return signed_url
             else:
@@ -414,9 +413,9 @@ class UserProfilePicUpdateSerializer(serializers.ModelSerializer):
                                 config=boto3.session.Config(signature_version='s3v4'))
             expiration_time = 3600    # URL expires after 1 hour
             signed_url = s3.generate_presigned_url(
-                'put_object', Params = {'Bucket': 'loopafrica-44703', 'Key': object_key},
-                ExpiresIn = expiration_time
-            )
+                    'get_object', Params = {'Bucket': 'loopafrica-44703', 'Key': object_key},
+                    ExpiresIn = expiration_time, HttpMethod='GET'
+                )
             return signed_url
         else:
             return None
