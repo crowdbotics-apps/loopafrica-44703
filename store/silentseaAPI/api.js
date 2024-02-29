@@ -29,6 +29,24 @@ function api_v1_appointments_destroy(payload) {
 function api_v1_changepassword_create(payload) {
   return silentseaAPI.post(`/api/v1/changepassword/`)
 }
+function api_v1_doctors_list(payload) {
+  return silentseaAPI.get(`/api/v1/doctors/`)
+}
+function api_v1_doctors_create(payload) {
+  return silentseaAPI.post(`/api/v1/doctors/`, payload)
+}
+function api_v1_doctors_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/doctors/${payload.id}/`)
+}
+function api_v1_doctors_update(payload) {
+  return silentseaAPI.put(`/api/v1/doctors/${payload.id}/`, payload)
+}
+function api_v1_doctors_partial_update(payload) {
+  return silentseaAPI.patch(`/api/v1/doctors/${payload.id}/`, payload)
+}
+function api_v1_doctors_destroy(payload) {
+  return silentseaAPI.delete(`/api/v1/doctors/${payload.id}/`)
+}
 function api_v1_edit_user_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/edit-user/${payload.id}/`)
 }
@@ -294,6 +312,24 @@ function patient_patient_partial_update(payload) {
 function patient_patient_destroy(payload) {
   return silentseaAPI.delete(`/patient/patient/${payload.id}/`)
 }
+function patient_vitals_list(payload) {
+  return silentseaAPI.get(`/patient/vitals/`)
+}
+function patient_vitals_create(payload) {
+  return silentseaAPI.post(`/patient/vitals/`, payload)
+}
+function patient_vitals_retrieve(payload) {
+  return silentseaAPI.get(`/patient/vitals/${payload.id}/`)
+}
+function patient_vitals_update(payload) {
+  return silentseaAPI.put(`/patient/vitals/${payload.id}/`, payload)
+}
+function patient_vitals_partial_update(payload) {
+  return silentseaAPI.patch(`/patient/vitals/${payload.id}/`, payload)
+}
+function patient_vitals_destroy(payload) {
+  return silentseaAPI.delete(`/patient/vitals/${payload.id}/`)
+}
 function rest_auth_login_create(payload) {
   return silentseaAPI.post(`/rest-auth/login/`, payload)
 }
@@ -336,6 +372,12 @@ export const apiService = {
   api_v1_appointments_partial_update,
   api_v1_appointments_destroy,
   api_v1_changepassword_create,
+  api_v1_doctors_list,
+  api_v1_doctors_create,
+  api_v1_doctors_retrieve,
+  api_v1_doctors_update,
+  api_v1_doctors_partial_update,
+  api_v1_doctors_destroy,
   api_v1_edit_user_retrieve,
   api_v1_edit_user_update,
   api_v1_edit_user_partial_update,
@@ -403,6 +445,12 @@ export const apiService = {
   patient_patient_update,
   patient_patient_partial_update,
   patient_patient_destroy,
+  patient_vitals_list,
+  patient_vitals_create,
+  patient_vitals_retrieve,
+  patient_vitals_update,
+  patient_vitals_partial_update,
+  patient_vitals_destroy,
   rest_auth_login_create,
   rest_auth_logout_retrieve,
   rest_auth_logout_create,
