@@ -48,7 +48,7 @@ class PatientInfoSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification']
+        fields = ['id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'availabile_time', 'working_days', 'working_hours', 'experience' ]
 
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -411,10 +411,10 @@ class UserProfilePicUpdateSerializer(serializers.ModelSerializer):
             # Generate a signed URL using the extracted object key
             s3 = boto3.client('s3', region_name=env.str("AWS_STORAGE_REGION", ""),
                                 config=boto3.session.Config(signature_version='s3v4'))
-            expiration_time = 3600    # URL expires after 1 hour
+            #expiration_time = 3600    # URL expires after 1 hour
             signed_url = s3.generate_presigned_url(
                     'get_object', Params = {'Bucket': 'loopafrica-44703', 'Key': object_key},
-                    ExpiresIn = expiration_time, HttpMethod='GET'
+                    HttpMethod='GET'
                 )
             return signed_url
         else:
@@ -452,13 +452,21 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class UserProListSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     patient_info = serializers.SerializerMethodField()
+    doctor_info = serializers.SerializerMethodField()
     
     class Meta:
         model = UserProfile
-        fields = ['user', 'user_type', 'patient_info']
+        fields = ['user', 'user_type', 'patient_info', 'doctor_info']
 
     def get_patient_info(self, obj):
         patient_info = PatientInfo.objects.filter(user=obj.user).first()
         if patient_info:
             return PatientInfoSerializer(patient_info).data
         return None
+
+    def get_doctor_info(self, obj):
+        doctor_info = Doctor.objects.filter(user=obj.user).first()
+        if doctor_info:
+            return DoctorSerializer(doctor_info).data
+        return None
+

@@ -12,6 +12,7 @@ from home.api.v1.viewsets import (
     SignUpWithEmailView,
     SendPasswordResetEmailView,
     ChangePasswordView,
+    DoctorViewSet,
 )
 
 router = DefaultRouter()
@@ -20,6 +21,7 @@ router.register("login", LoginViewSet, basename="login")
 router.register("feedback", FeedbackViewSet, basename="feedback")
 router.register('appointments', AppointmentViewSet, basename='appointment')
 router.register(r'user-profiles', UserProfileViewSet, basename='user-profiles')
+router.register(r'doctors', DoctorViewSet, basename='doctors')
 
 urlpatterns = [
     path("", include(router.urls)),
