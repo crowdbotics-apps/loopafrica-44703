@@ -131,7 +131,7 @@ class PatientInfo(models.Model):
         return f"Patient Info for {self.user.username}"
     
 class Doctor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor', null=True, blank=True)
     doctor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     age = models.IntegerField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
@@ -163,12 +163,13 @@ class Instructor(models.Model):
         return f"Instructor Info for {self.user.username}"
 
 class Feedback(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback_user')    
     subject = models.CharField(max_length=255)
     message = models.TextField()
     replied = models.BooleanField(default=False)
     reply_message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    ratings = models.IntegerField(null=True, blank=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='feedback_last_updated_by')    
 
     def __str__(self):
@@ -176,20 +177,21 @@ class Feedback(models.Model):
 
 class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_appointment', null=True, blank=True)
     date = models.DateField()
     consult_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     doctor_queries = models.TextField(null=True, blank=True)
-    health_issue = models.TextField(null=True, blank=True)
+    health_issue = models.TextField(null=True, blank=True)    
+    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, null=True, blank=True)    
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='appoinment_last_updated_by')
 
     def __str__(self):
         return f"Appointment for {self.user.username} with {self.doctor.user.username}"
  
 class Vitals(models.Model):
-    patient_info = models.ForeignKey(PatientInfo, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='user_vitals')
+    patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='patient_vitals', null=True, blank=True)
     heart_rate = models.IntegerField(null=True, blank=True)  # Heart rate in beats per minute
     blood_status = models.CharField(null=True, blank=True, max_length=100)  # Blood pressure status like normal, high, low
     blood_count = models.IntegerField(null=True, blank=True)  # Blood count
