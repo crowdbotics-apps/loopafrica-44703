@@ -45,11 +45,6 @@ class PatientInfoSerializer(serializers.ModelSerializer):
         model = PatientInfo
         fields = ['patient_id', 'title', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'blood_group', 'height', 'weight', 'blood_group', 'disability', 'genotype','support_needed']
 
-class DoctorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Doctor
-        fields = ['id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
-
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
@@ -117,6 +112,16 @@ class SignupWithEmailSerializer(serializers.ModelSerializer):
         """rest_auth passes request so we must override to accept it"""
         return super().save()
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
+
+class DoctorSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Doctor
+        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
 
 class SignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -237,11 +242,6 @@ class AuthTokenByEmailSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs             
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
-
 class PasswordSerializer(PasswordResetSerializer):
     """Custom serializer for rest_auth to solve reset password error"""
     password_reset_form_class = ResetPasswordForm
@@ -302,6 +302,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         instance.save()
  
         return instance  
+
 
 class EditUserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer()
