@@ -117,6 +117,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
 
+class DoctorListSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = Doctor
+        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
+
 class DoctorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     class Meta:
@@ -307,7 +312,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 class EditUserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer()
     patient_info = PatientInfoSerializer(required=False)
-    doctor_info = DoctorSerializer(required=False)
+    doctor_info = DoctorListSerializer(required=False)
     instructor_info = InstructorSerializer(required=False)
 
     class Meta:
@@ -348,7 +353,7 @@ class EditUserSerializer(serializers.ModelSerializer):
         # Update doctor info if provided
         if doctor_info_data:
             doctor_info_instance, _ = Doctor.objects.get_or_create(user=instance)
-            doctor_info_serializer = DoctorSerializer(doctor_info_instance, data=doctor_info_data, partial=True)
+            doctor_info_serializer = DoctorListSerializer(doctor_info_instance, data=doctor_info_data, partial=True)
             doctor_info_serializer.is_valid(raise_exception=True)
             doctor_info_serializer.save()
 
@@ -468,6 +473,6 @@ class UserProListSerializer(serializers.ModelSerializer):
     def get_doctor_info(self, obj):
         doctor_info = Doctor.objects.filter(user=obj.user).first()
         if doctor_info:
-            return DoctorSerializer(doctor_info).data
+            return DoctorListSerializer(doctor_info).data
         return None
 
