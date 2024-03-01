@@ -7,7 +7,7 @@ class VitalsViewSet(ModelViewSet):
     serializer_class = VitalsSerializer
 
     def get_queryset(self):
-        patient_info_id = self.request.query_params.get('patient_info')
-        if patient_info_id:
-            return Vitals.objects.filter(patient_info_id=patient_info_id)
+        user = self.request.query_params.get('user_id')
+        if user:
+            return Vitals.objects.filter(user=user)
         return Vitals.objects.all()
