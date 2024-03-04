@@ -182,8 +182,11 @@ class Appointment(models.Model):
     consult_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     doctor_queries = models.TextField(null=True, blank=True)
-    health_issue = models.TextField(null=True, blank=True)    
-    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE, null=True, blank=True)    
+    health_issue = models.TextField(null=True, blank=True)
+    feedback = models.TextField(null=True, blank=True)
+    ratings = models.IntegerField(null=True, blank=True)
+    status = models.CharField(max_length=255, null=True, blank=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='appoinment_last_updated_by')
 
     def __str__(self):

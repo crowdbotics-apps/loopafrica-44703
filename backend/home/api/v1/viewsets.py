@@ -109,6 +109,49 @@ class AppointmentViewSet(ModelViewSet):
     serializer_class = AppointmentSerializer
     permission_classes = [IsAuthenticated]
 
+    def create(self, request):
+        serializer = AppointmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request, pk=None):
+        appointment = self.get_object()
+        serializer = AppointmentSerializer(appointment)
+        return Response(serializer.data)
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = AppointmentSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['patch'])
+    def update_feedback(self, request):
+        data = request.data
+        user_id = data.get('user')
+        doctor_id = data.get('doctor')
+        date = data.get('date')
+        consult_time = data.get('consult_time')
+        feedback = data.get('feedback')
+        ratings = data.get('ratings')
+        
+        if not (user_id and doctor_id and date and consult_time and feedback):
+            return Response({'error': 'User ID, doctor ID, date, consult time, and feedback are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            appointment = Appointment.objects.get(user_id=user_id, doctor_id=doctor_id, date=date, consult_time=consult_time)
+        except Appointment.DoesNotExist:
+            return Response({'error': 'Appointment not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        appointment.feedback = feedback
+        appointment.ratings = ratings
+        appointment.status = "Completed"
+        appointment.save()
+
+        serializer = AppointmentSerializer(appointment)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProListSerializer

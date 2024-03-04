@@ -19,7 +19,7 @@ router = DefaultRouter()
 router.register("signup", SignupViewSet, basename="signup")
 router.register("login", LoginViewSet, basename="login")
 router.register("feedback", FeedbackViewSet, basename="feedback")
-router.register('appointments', AppointmentViewSet, basename='appointment')
+#router.register('appointments', AppointmentViewSet, basename='appointments')
 router.register(r'user-profiles', UserProfileViewSet, basename='user-profiles')
 router.register(r'doctors', DoctorViewSet, basename='doctors')
 
@@ -30,4 +30,8 @@ urlpatterns = [
     path('edit-user/<int:pk>/', EditUserView.as_view(), name='edit-user'),
     path('sendresetpasswordemail/', SendPasswordResetEmailView.as_view(), name='sendresetpasswordemail'),
     path('changepassword/',ChangePasswordView.as_view(), name='changepassword'),
+    path('appointments/update-feedback/', AppointmentViewSet.as_view({'patch': 'update_feedback'}), name='update_feedback'),
+    path('appointments/create/', AppointmentViewSet.as_view({'post':'create'}), name='create_appointment'),
+    path('appointments/', AppointmentViewSet.as_view({'get':'list'}), name='list_appointments'),
+    path('appointments/<int:pk>/', AppointmentViewSet.as_view({'get':'retrieve'}), name='get_appointment'),    
 ]
