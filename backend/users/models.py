@@ -178,8 +178,8 @@ class Feedback(models.Model):
 class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_appointment', null=True, blank=True)
-    date = models.DateField()
-    consult_time = models.DateTimeField()
+    date = models.DateField(null=True, blank=True)
+    consult_time = models.TimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     doctor_queries = models.TextField(null=True, blank=True)
     health_issue = models.TextField(null=True, blank=True)

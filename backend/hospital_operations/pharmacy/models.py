@@ -27,11 +27,12 @@ class Prescription(Base):
 
 class Medication(Base):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, null=True, blank=True)
-    item = models.ForeignKey(Product, on_delete=models.CASCADE)
+    item = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     dosage = models.CharField(max_length=100)
     quantity = models.IntegerField()
     duration = models.CharField(max_length=100)
-    notes = models.TextField(null=True, blank=True) 
+    frm = models.DateTimeField(null=True, blank=True)
+    to = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Medication for {self.prescription.patient.name}: {self.item.name}"

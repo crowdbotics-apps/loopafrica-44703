@@ -19,7 +19,6 @@ router = DefaultRouter()
 router.register("signup", SignupViewSet, basename="signup")
 router.register("login", LoginViewSet, basename="login")
 router.register("feedback", FeedbackViewSet, basename="feedback")
-#router.register('appointments', AppointmentViewSet, basename='appointments')
 router.register(r'user-profiles', UserProfileViewSet, basename='user-profiles')
 router.register(r'doctors', DoctorViewSet, basename='doctors')
 

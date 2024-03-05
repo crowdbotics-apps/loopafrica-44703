@@ -1,8 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAdminUser
+from modules.django_inventory_management.inventory_management.models import Supplier, Category, Product, Stock, Invoice, InvoiceItem
 
-from modules.django_inventory_management.inventory_management.serializers import *
+from modules.django_inventory_management.inventory_management.serializers import SupplierSerializer, CategorySerializer, ProductSerializer, StockSerializer, InvoiceSerializer, InvoiceItemSerializer
 
 
 class SupplierViewSet(viewsets.ModelViewSet):
