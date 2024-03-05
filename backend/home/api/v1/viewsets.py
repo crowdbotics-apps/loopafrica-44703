@@ -183,6 +183,17 @@ class DoctorViewSet(ModelViewSet):
         serializer = DoctorSerializer(queryset, many=True)  # Serialize all doctors
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'])
+    def patient_count(self, request):
+        doctor_id = request.query_params.get('doctor_id')
+        if not doctor_id:
+            return Response({'error': 'Doctor ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        doctor = get_object_or_404(Doctor, id=doctor_id)
+        patient_count = doctor.appointment_set.filter(status='Completed').count()
+        return Response({'patient_count': patient_count}, status=status.HTTP_200_OK)
+
+    
 class SendPasswordResetEmailView(APIView):
     def post(self, request, format=None):
         serializer=SendPasswordResetEmailSerializer(data=request.data)
