@@ -159,8 +159,14 @@ class Instructor(models.Model):
     last_updated_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='instructor_last_updated_by')    
 
-    def __str__(self):
-        return f"Instructor Info for {self.user.username}"
+class other_user(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='other_user')
+    patient_id = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='patient', null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    relationship = models.CharField(max_length=255, null=True, blank=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='other_last_updated_by')
 
 class Feedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback_user')    
