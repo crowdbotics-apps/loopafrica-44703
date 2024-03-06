@@ -18,7 +18,8 @@ class PatientProfileSerializer(serializers.ModelSerializer):
 class MedicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medication
-        fields = '__all__'
+        fields = ['item', 'dosage', 'quantity', 'duration', 'frm', 'to', 'time']
+
 
 class PrescriptionSerializer(serializers.ModelSerializer):
     medications = MedicationSerializer(many=True, read_only=True)

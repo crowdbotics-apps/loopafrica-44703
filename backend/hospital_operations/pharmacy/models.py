@@ -25,7 +25,7 @@ class Prescription(models.Model):
     last_updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
 
     def __str__(self):
-        return f"Prescription for {self.patient.username} by {self.doctor.username}"
+        return f"Prescription for {self.user.name} by {self.doctor.name}"
 
 class Medication(Base):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, null=True, blank=True)
@@ -38,7 +38,7 @@ class Medication(Base):
     time = models.CharField(max_length=100, null=True, blank=True)    
 
     def __str__(self):
-        return f"Medication for {self.prescription.patient.name}: {self.item.name}"
+        return f"Medication for {self.prescription.user.name}: {self.item.name}"
     
 class Dispense(Base):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, null=True, blank=True)
