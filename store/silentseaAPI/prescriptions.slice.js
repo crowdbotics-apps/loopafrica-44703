@@ -44,6 +44,24 @@ export const patient_prescriptions_destroy = createAsyncThunk(
     return response.data
   }
 )
+export const patient_prescriptions_medicationlist_retrieve = createAsyncThunk(
+  "prescriptions/patient_prescriptions_medicationlist_retrieve",
+  async payload => {
+    const response = await apiService.patient_prescriptions_medicationlist_retrieve(
+      payload
+    )
+    return response.data
+  }
+)
+export const patient_prescriptions_medicationlist_retrieve_2 = createAsyncThunk(
+  "prescriptions/patient_prescriptions_medicationlist_retrieve_2",
+  async payload => {
+    const response = await apiService.patient_prescriptions_medicationlist_retrieve_2(
+      payload
+    )
+    return response.data
+  }
+)
 const initialState = { entities: [], api: { loading: "idle", error: null } }
 const prescriptionsSlice = createSlice({
   name: "prescriptions",
@@ -171,6 +189,68 @@ const prescriptionsSlice = createSlice({
           state.api.loading = "idle"
         }
       })
+      .addCase(
+        patient_prescriptions_medicationlist_retrieve.pending,
+        (state, action) => {
+          if (state.api.loading === "idle") {
+            state.api.loading = "pending"
+          }
+        }
+      )
+      .addCase(
+        patient_prescriptions_medicationlist_retrieve.fulfilled,
+        (state, action) => {
+          if (state.api.loading === "pending") {
+            state.entities = [
+              ...state.entities.filter(
+                record => record.id !== action.payload.id
+              ),
+              action.payload
+            ]
+            state.api.loading = "idle"
+          }
+        }
+      )
+      .addCase(
+        patient_prescriptions_medicationlist_retrieve.rejected,
+        (state, action) => {
+          if (state.api.loading === "pending") {
+            state.api.error = action.error
+            state.api.loading = "idle"
+          }
+        }
+      )
+      .addCase(
+        patient_prescriptions_medicationlist_retrieve_2.pending,
+        (state, action) => {
+          if (state.api.loading === "idle") {
+            state.api.loading = "pending"
+          }
+        }
+      )
+      .addCase(
+        patient_prescriptions_medicationlist_retrieve_2.fulfilled,
+        (state, action) => {
+          if (state.api.loading === "pending") {
+            state.entities = [
+              ...state.entities.filter(
+                record => record.id !== action.payload.id
+              ),
+              action.payload
+            ]
+            state.api.loading = "idle"
+          }
+        }
+      )
+      .addCase(
+        patient_prescriptions_medicationlist_retrieve_2.rejected,
+        (state, action) => {
+          if (state.api.loading === "pending") {
+            state.api.error = action.error
+            state.api.loading = "idle"
+          }
+        }
+      )
   }
 })
 export default {
@@ -180,5 +260,7 @@ export default {
   patient_prescriptions_update,
   patient_prescriptions_partial_update,
   patient_prescriptions_destroy,
+  patient_prescriptions_medicationlist_retrieve,
+  patient_prescriptions_medicationlist_retrieve_2,
   slice: prescriptionsSlice
 }

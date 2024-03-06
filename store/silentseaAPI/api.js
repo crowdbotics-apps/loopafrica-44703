@@ -327,6 +327,14 @@ function patient_prescriptions_partial_update(payload) {
 function patient_prescriptions_destroy(payload) {
   return silentseaAPI.delete(`/patient/prescriptions/${payload.id}/`)
 }
+function patient_prescriptions_medicationlist_retrieve(payload) {
+  return silentseaAPI.get(`/patient/prescriptions/medicationlist/`)
+}
+function patient_prescriptions_medicationlist_retrieve_2(payload) {
+  return silentseaAPI.get(
+    `/patient/prescriptions/medicationlist/${payload.user_id}/`
+  )
+}
 function patient_vitals_list(payload) {
   return silentseaAPI.get(`/patient/vitals/`)
 }
@@ -465,6 +473,8 @@ export const apiService = {
   patient_prescriptions_update,
   patient_prescriptions_partial_update,
   patient_prescriptions_destroy,
+  patient_prescriptions_medicationlist_retrieve,
+  patient_prescriptions_medicationlist_retrieve_2,
   patient_vitals_list,
   patient_vitals_create,
   patient_vitals_retrieve,
