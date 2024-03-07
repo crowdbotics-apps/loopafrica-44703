@@ -291,6 +291,24 @@ function modules_inventory_management_supplier_destroy(payload) {
     `/modules/inventory-management/supplier/${payload.id}/`
   )
 }
+function patient_medical_records_list(payload) {
+  return silentseaAPI.get(`/patient/medical_records/`)
+}
+function patient_medical_records_create(payload) {
+  return silentseaAPI.post(`/patient/medical_records/`, payload)
+}
+function patient_medical_records_retrieve(payload) {
+  return silentseaAPI.get(`/patient/medical_records/${payload.id}/`)
+}
+function patient_medical_records_update(payload) {
+  return silentseaAPI.put(`/patient/medical_records/${payload.id}/`, payload)
+}
+function patient_medical_records_partial_update(payload) {
+  return silentseaAPI.patch(`/patient/medical_records/${payload.id}/`, payload)
+}
+function patient_medical_records_destroy(payload) {
+  return silentseaAPI.delete(`/patient/medical_records/${payload.id}/`)
+}
 function patient_patient_list(payload) {
   return silentseaAPI.get(`/patient/patient/`)
 }
@@ -461,6 +479,12 @@ export const apiService = {
   modules_inventory_management_supplier_update,
   modules_inventory_management_supplier_partial_update,
   modules_inventory_management_supplier_destroy,
+  patient_medical_records_list,
+  patient_medical_records_create,
+  patient_medical_records_retrieve,
+  patient_medical_records_update,
+  patient_medical_records_partial_update,
+  patient_medical_records_destroy,
   patient_patient_list,
   patient_patient_create,
   patient_patient_retrieve,
