@@ -192,6 +192,17 @@ class DoctorViewSet(ModelViewSet):
         doctor = get_object_or_404(Doctor, id=doctor_id)
         patient_count = doctor.appointment_set.filter(status='Completed').count()
         return Response({'patient_count': patient_count}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def doctor_specialized(self, request):
+        specialized = request.query_params.get('specialization')
+        if not specialized:
+            return Response({'error': 'specialized param is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Ensure Doctor queryset contains Doctor instances
+        doctors = Doctor.objects.filter(specialized=specialized)
+        serializer = DoctorSerializer(doctors, many=True)  # Use many=True for multiple instances
+        return Response(serializer.data)
 
     
 class SendPasswordResetEmailView(APIView):

@@ -140,12 +140,17 @@ class PatientInfo(models.Model):
         return f"Patient Info for {self.user.username}"
     
 class Doctor(models.Model):
+    SPECIALIZED_CHOICES = [
+        ("dietician", "dietician"),
+        ("general_medicine_practitioner", "General Medicine Practitioner"),
+        ("geriatrician", "Geriatrician"),        
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor', null=True, blank=True)
     doctor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     age = models.IntegerField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     about_doctor = models.TextField(null=True, blank=True)
-    specialized = models.TextField(null=True, blank=True)
+    specialized = models.TextField(max_length=255, choices=SPECIALIZED_CHOICES, null=True, blank=True)
     qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
     available_time = models.TimeField(null=True, blank=True)
     working_days = models.CharField(max_length=255, null=True, blank=True)
