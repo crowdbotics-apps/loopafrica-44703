@@ -356,6 +356,48 @@ function patient_prescriptions_medicationlist_retrieve_2(payload) {
     `/patient/prescriptions/medicationlist/${payload.user_id}/`
   )
 }
+function patient_test_results_list(payload) {
+  return silentseaAPI.get(`/patient/test-results/`)
+}
+function patient_test_results_create(payload) {
+  return silentseaAPI.post(`/patient/test-results/`, payload)
+}
+function patient_test_results_upload_list(payload) {
+  return silentseaAPI.get(`/patient/test-results-upload/`)
+}
+function patient_test_results_upload_create(payload) {
+  return silentseaAPI.post(`/patient/test-results-upload/`, payload)
+}
+function patient_test_results_upload_retrieve(payload) {
+  return silentseaAPI.get(`/patient/test-results-upload/${payload.id}/`)
+}
+function patient_test_results_upload_update(payload) {
+  return silentseaAPI.put(
+    `/patient/test-results-upload/${payload.id}/`,
+    payload
+  )
+}
+function patient_test_results_upload_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/patient/test-results-upload/${payload.id}/`,
+    payload
+  )
+}
+function patient_test_results_upload_destroy(payload) {
+  return silentseaAPI.delete(`/patient/test-results-upload/${payload.id}/`)
+}
+function patient_test_results_retrieve(payload) {
+  return silentseaAPI.get(`/patient/test-results/${payload.id}/`)
+}
+function patient_test_results_update(payload) {
+  return silentseaAPI.put(`/patient/test-results/${payload.id}/`, payload)
+}
+function patient_test_results_partial_update(payload) {
+  return silentseaAPI.patch(`/patient/test-results/${payload.id}/`, payload)
+}
+function patient_test_results_destroy(payload) {
+  return silentseaAPI.delete(`/patient/test-results/${payload.id}/`)
+}
 function patient_vitals_list(payload) {
   return silentseaAPI.get(`/patient/vitals/`)
 }
@@ -503,6 +545,18 @@ export const apiService = {
   patient_prescriptions_destroy,
   patient_prescriptions_medicationlist_retrieve,
   patient_prescriptions_medicationlist_retrieve_2,
+  patient_test_results_list,
+  patient_test_results_create,
+  patient_test_results_upload_list,
+  patient_test_results_upload_create,
+  patient_test_results_upload_retrieve,
+  patient_test_results_upload_update,
+  patient_test_results_upload_partial_update,
+  patient_test_results_upload_destroy,
+  patient_test_results_retrieve,
+  patient_test_results_update,
+  patient_test_results_partial_update,
+  patient_test_results_destroy,
   patient_vitals_list,
   patient_vitals_create,
   patient_vitals_retrieve,
