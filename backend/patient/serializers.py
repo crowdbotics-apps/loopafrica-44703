@@ -8,7 +8,7 @@ from home.api.v1.serializers import UserSerializer
 from users.models import Vitals
 from hospital_operations.pharmacy.models import Prescription, Medication
 from hospital_operations.emr.models import MedicalRecord, TestResult
- 
+
 import environ
  
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,10 +46,10 @@ class TestResultSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MedicalRecordSerializer(serializers.ModelSerializer):
-    test_results = TestResultSerializer(many=True, required=False)
+    #test_results = TestResultSerializer(many=True, required=False)
     class Meta:
         model = MedicalRecord
-        fields = ['user', 'patient', 'date', 'doctor', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed', 'records', 'test_results']
+        fields = ['user', 'patient', 'date', 'doctor', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed',]
 
     def get_medical_record_signed_url(self, obj):
         medical_record_url = obj.records.url if obj.records else None
@@ -75,3 +75,46 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
             return signed_url
         else:
             return None
+
+class TestResultUploadSerializer(serializers.ModelSerializer):
+    test_results_signed_url = serializers.SerializerMethodField()
+ 
+    class Meta:
+        model = TestResult
+        fields = ['id', 'test_results', 'test_results_signed_url']
+
+    
+    def get_test_results_signed_url(self, obj):        
+        medical_record_url = obj.test_results.url if obj.test_results else None
+        
+        if medical_record_url:
+            parsed_url = urlparse(medical_record_url)
+            object_key = parsed_url.path[1:]  # Remove the leading slash
+
+            # Extract patient ID from the object
+            patient_id = self.context['request'].user.id
+            now = datetime.now()
+            date_time = now.strftime("%m-%d-%Y")
+
+            # Construct the object key in the format of patient_id/datetime/records/filename
+            file_name = os.path.basename(object_key)
+            folder_path = f"{str(patient_id)}/{str(date_time)}/records/{file_name}"
+
+            # Generate a signed URL using the constructed object key
+            s3 = boto3.client('s3', region_name=env.str("AWS_STORAGE_REGION", ""),
+                            config=boto3.session.Config(signature_version='s3v4'))
+            signed_url = s3.generate_presigned_url(
+                'get_object', Params={'Bucket': 'loopafrica-44703', 'Key': object_key},
+                HttpMethod='GET'
+            )
+            return signed_url
+        else:
+            return None
+ 
+    def update(self, instance, validated_data):
+        test_results = validated_data.get('test_results', None)
+        instance = super().update(instance, validated_data)
+        if test_results:
+            instance.test_results = test_results
+            instance.save()
+        return instance

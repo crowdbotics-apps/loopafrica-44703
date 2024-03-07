@@ -84,6 +84,9 @@ class UserProfilePicUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
     serializer_class = UserProfilePicUpdateSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
+    def get_object(self):
+        return self.request.user
+    
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         
@@ -95,7 +98,7 @@ class UserProfilePicUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-
+    
 class FeedbackViewSet(ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
