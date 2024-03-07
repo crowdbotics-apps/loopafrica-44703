@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum
 from modules.django_inventory_management.inventory_management.models import *
-from users.models import *
+from users.models import PatientInfo, Doctor, User
 
 def get_upload_medRec(instance, filename):
     return os.path.join('MRO', 'medrec', str(instance.pk), filename)
@@ -20,14 +20,15 @@ class Base(models.Model):
         abstract = True
         
 class MedicalRecord(Base):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_medical_records', null=True, blank=True)
     patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='medical_records', null=True, blank=True)
     date = models.DateField()
-    doctor = models.CharField(max_length=100)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doc_medical_records', null=True, blank=True)
     diagnosis = models.TextField()
     symptoms = models.TextField()
     tests_conducted = models.TextField()
     medications_prescribed = models.TextField()
-    records = models.FileField(upload_to=get_upload_medRec, null=True, blank=True)
+    records = models.FileField(upload_to=get_upload_medRec, null=True, blank=True)    
 
     def __str__(self):
         return f"{self.patient.user.username} - {self.date}"

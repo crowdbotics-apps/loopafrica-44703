@@ -1,7 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from users.models import Vitals
-from .serializers import VitalsSerializer, PrescriptionSerializer, MedicationSerializer
+from .serializers import VitalsSerializer, PrescriptionSerializer, MedicationSerializer, MedicalRecordSerializer
 from hospital_operations.pharmacy.models import Prescription, Medication
+from hospital_operations.emr.models import MedicalRecord, TestResult
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
@@ -45,8 +46,7 @@ class PrescriptionViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def medicationlist(self, request, user_id=None):
         # Retrieve a specific prescription based on the user ID and prescription ID
-        prescription = Prescription.objects.filter(user=user_id).order_by("-id").first()
-        print(prescription.id)        
+        prescription = Prescription.objects.filter(user=user_id).order_by("-id").first()                
         if prescription:
             #medications = Medication.objects.filter(prescription_id=prescription.id, frm__gte=prescription.issue_date, to__lte=prescription.issue_date)
             medications = Medication.objects.filter(prescription_id=prescription.id)
@@ -59,3 +59,7 @@ class PrescriptionViewSet(ModelViewSet):
             return Response(response_data)
         else:
             return Response({"message": "Prescription not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class MedicalRecordViewSet(ModelViewSet):
+    queryset = MedicalRecord.objects.all()
+    serializer_class = MedicalRecordSerializer

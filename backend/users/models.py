@@ -94,7 +94,7 @@ class PatientInfo(models.Model):
     HEALTH_CHOICES = [
         ("healthiest", "I'm the healthiest person I've ever been"),
         ("ok", "It's ok but could be better"),
-        ("challenging", "My health is challenging"),
+        ("challenging", "My health is challenging"),        
     ]
 
     BUSY_CHOICES = [
@@ -118,6 +118,12 @@ class PatientInfo(models.Model):
     address = models.TextField(null=True, blank=True)
     age_range = models.CharField(max_length=255, choices=AGE_CHOICES, null=True, blank=True)
     health_today = models.CharField(max_length=255, choices=HEALTH_CHOICES, null=True, blank=True)
+    allergies = models.BooleanField(default=False, null=True, blank=True)
+    medications = models.BooleanField(default=False, null=True, blank=True)
+    family_health_history = models.BooleanField(default=False, null=True, blank=True)
+    occupation = models.CharField(max_length=255, null=True, blank=True)
+    physical_activity = models.CharField(max_length=255, null=True, blank=True)
+    habits = models.CharField(max_length=255, null=True, blank=True)
     busy_schedule = models.CharField(max_length=255, choices=BUSY_CHOICES, null=True, blank=True)
     support_needed = MultiSelectField(max_length=255, choices=SUPPORT_CHOICES, null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
@@ -126,6 +132,9 @@ class PatientInfo(models.Model):
     blood_group = models.CharField(max_length=255, null=True, blank=True)
     disability = models.BooleanField(default=False, null=True, blank=True)
     genotype = models.CharField(max_length=255, null=True, blank=True)
+    emergency_contact_name = models.CharField(max_length=255, null=True, blank=True)
+    emergency_contact = models.CharField(max_length=255, null=True, blank=True)
+    emergency_contact_email = models.EmailField(null=True, blank=True)
 
     def __str__(self):
         return f"Patient Info for {self.user.username}"

@@ -1,9 +1,21 @@
+import os
+import boto3
+from datetime import datetime
 from rest_framework import serializers
+from urllib.parse import urlparse
 from users.models import PatientInfo
 from home.api.v1.serializers import UserSerializer
 from users.models import Vitals
 from hospital_operations.pharmacy.models import Prescription, Medication
+from hospital_operations.emr.models import MedicalRecord, TestResult
  
+import environ
+ 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_file = os.path.join(BASE_DIR, ".env")
+env = environ.Env()
+env.read_env(env_file)
+
 class VitalsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vitals
@@ -27,3 +39,39 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prescription
         fields = ['user', 'doctor', 'issue_date', 'notes', 'medications']
+
+class TestResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestResult
+        fields = '__all__'
+
+class MedicalRecordSerializer(serializers.ModelSerializer):
+    test_results = TestResultSerializer(many=True, required=False)
+    class Meta:
+        model = MedicalRecord
+        fields = ['user', 'patient', 'date', 'doctor', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed', 'records', 'test_results']
+
+    def get_medical_record_signed_url(self, obj):
+        medical_record_url = obj.records.url if obj.records else None
+        
+        if medical_record_url:
+            parsed_url = urlparse(medical_record_url)
+            object_key = parsed_url.path[1:]  # Remove the leading slash
+
+            # Extract patient ID from the object
+            patient_id = obj.patient.id
+
+            # Construct the object key in the format of patient_id/datetime/records/filename
+            file_name = os.path.basename(object_key)
+            folder_path = f"{patient_id}/{datetime.now().strftime('%Y/%m/%d')}/records/{file_name}"
+
+            # Generate a signed URL using the constructed object key
+            s3 = boto3.client('s3', region_name=env.str("AWS_STORAGE_REGION", ""),
+                            config=boto3.session.Config(signature_version='s3v4'))
+            signed_url = s3.generate_presigned_url(
+                'get_object', Params={'Bucket': 'loopafrica-44703', 'Key': folder_path},
+                HttpMethod='GET'
+            )
+            return signed_url
+        else:
+            return None

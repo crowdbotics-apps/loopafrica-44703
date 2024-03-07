@@ -34,6 +34,9 @@ env.read_env(env_file)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
+PAYSTACK_PUBLIC_KEY=os.environ.get('PAYSTACK_PUBLIC_KEY')
+PAYSTACK_PRIVATE_KEY=os.environ.get('PAYSTACK_SECRET_KEY')
+
 try:
     # Pull secrets from Secret Manager
     _, project = google.auth.default()
@@ -101,6 +104,7 @@ THIRD_PARTY_APPS = [
     'storages',
     'import_export',
     'corsheaders',
+    #'paystack',
 ]
 MODULES_APPS = get_modules()
 
@@ -237,8 +241,13 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
+            'rest_framework.authentication.TokenAuthentication',
+            #'rest_framework.authentication.SessionAuthentication',
+            #'rest_framework.authentication.BasicAuthentication',
+            #'rest_framework.schemas.coreapi.AutoSchema',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     )
 }
 

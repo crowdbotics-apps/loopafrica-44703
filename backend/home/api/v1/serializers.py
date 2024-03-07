@@ -43,7 +43,7 @@ class PatientInfoSerializer(serializers.ModelSerializer):
     support_needed = serializers.MultipleChoiceField(choices=PatientInfo.SUPPORT_CHOICES, required=False, allow_blank=True, allow_null=True, write_only=True)
     class Meta:
         model = PatientInfo
-        fields = ['patient_id', 'title', 'age', 'address', 'age_range', 'health_today', 'busy_schedule', 'blood_group', 'height', 'weight', 'blood_group', 'disability', 'genotype','support_needed']
+        fields = ['patient_id', 'title', 'age', 'address', 'age_range', 'health_today', 'allergies', 'medications','family_health_history','occupation', 'physical_activity','habits','busy_schedule', 'blood_group', 'height', 'weight', 'blood_group', 'disability', 'genotype','support_needed','emergency_contact_name','emergency_contact','emergency_contact_email']
 
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
