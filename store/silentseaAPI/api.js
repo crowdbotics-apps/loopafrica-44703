@@ -119,6 +119,9 @@ function api_v1_user_profiles_destroy(payload) {
 function api_v1_user_profiles_profile_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/user-profiles/profile/`)
 }
+function api_v1_user_profiles_profile_completion_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/user-profiles/profile_completion/`)
+}
 function api_v1_user_profiles_update_profile_create(payload) {
   return silentseaAPI.post(`/api/v1/user-profiles/update_profile/`, payload)
 }
@@ -487,6 +490,7 @@ export const apiService = {
   api_v1_user_profiles_partial_update,
   api_v1_user_profiles_destroy,
   api_v1_user_profiles_profile_retrieve,
+  api_v1_user_profiles_profile_completion_retrieve,
   api_v1_user_profiles_update_profile_create,
   modules_contact_us_contact_us_create,
   modules_inventory_management_category_list,
