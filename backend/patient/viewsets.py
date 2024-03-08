@@ -49,7 +49,7 @@ class PrescriptionViewSet(ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def medicationlist(self, request, user_id=None):
-        # Retrieve a specific prescription based on the user ID and prescription ID
+        # Retrieve a specific prescription based on the user ID and prescription ID        
         prescription = Prescription.objects.filter(user=user_id).order_by("-id").first()                
         if prescription:
             #medications = Medication.objects.filter(prescription_id=prescription.id, frm__gte=prescription.issue_date, to__lte=prescription.issue_date)
@@ -129,18 +129,14 @@ class MedicalRecordViewSet(ModelViewSet):
             to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
         else:
             to_date = None
-       
+        print (f"from and to : {from_date}, {to_date}")
         # Filter records based on user_id and date range if provided
         queryset = MedicalRecord.objects.all()
         if user_id:
             queryset = queryset.filter(user_id=user_id)
         if from_date and to_date:
-            queryset = queryset.filter(date__range=[from_date, to_date])
-        elif from_date:
-            queryset = queryset.filter(date__gte=from_date)
-        elif to_date:
-            queryset = queryset.filter(date__lte=to_date)
-       
+            queryset = queryset.filter(frmdate__gte=from_date , todate__lte=to_date)
+        
         # Serialize the queryset and return the response
         serializer = MedicalRecordSerializer(queryset, many=True)
         return Response(serializer.data)
