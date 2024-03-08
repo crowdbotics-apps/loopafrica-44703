@@ -35,10 +35,14 @@ class MedicationSerializer(serializers.ModelSerializer):
 
 class PrescriptionSerializer(serializers.ModelSerializer):
     medications = MedicationSerializer(many=True, read_only=True)
+    doctor_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Prescription
-        fields = ['user', 'doctor', 'issue_date', 'notes', 'medications']
+        fields = ['user', 'doctor', 'doctor_name','issue_date', 'notes', 'medications']
+
+    def get_doctor_name(self, obj):
+        return obj.doctor.user.username
 
 class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,7 +53,7 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
     #test_results = TestResultSerializer(many=True, required=False)
     class Meta:
         model = MedicalRecord
-        fields = ['user', 'patient', 'date', 'doctor', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed',]
+        fields = ['user', 'patient', 'date', 'frmdate', 'todate', 'doctor', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed',]
 
     def get_medical_record_signed_url(self, obj):
         medical_record_url = obj.records.url if obj.records else None

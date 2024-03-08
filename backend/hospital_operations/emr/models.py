@@ -29,7 +29,9 @@ class Base(models.Model):
 class MedicalRecord(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_medical_records', null=True, blank=True)
     patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='medical_records', null=True, blank=True)
-    date = models.DateField()
+    date = models.DateField(default=date.today, null=True, blank=True) 
+    frmdate = models.DateField(null=True, blank=True)
+    todate = models.DateField(null=True, blank=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doc_medical_records', null=True, blank=True)
     diagnosis = models.TextField()
     symptoms = models.TextField()
