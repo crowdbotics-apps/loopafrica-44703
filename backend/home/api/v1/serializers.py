@@ -476,3 +476,105 @@ class UserProListSerializer(serializers.ModelSerializer):
             return DoctorListSerializer(doctor_info).data
         return None
 
+class PatientProfileCompletionSerializer(serializers.ModelSerializer):
+    #user = UserSerializer()
+    user_id = serializers.IntegerField(source='user.id')
+    user_name = serializers.CharField(source='user.name')
+    patient_profile_completion = serializers.SerializerMethodField()
+    class Meta:
+        model = UserProfile
+        fields = ['user_id','user_name', 'user_type', 'patient_profile_completion']
+    
+    def get_patient_profile_completion(self, obj):
+        patient_info = PatientInfo.objects.filter(user=obj.user).first()
+        
+        if patient_info:
+            # Define required fields for profile completion
+            required_fields = [
+                obj.user.first_name,
+                obj.user.last_name,
+                obj.user.dob,
+                obj.user.phone_number,
+                obj.user.email,
+                obj.user.gender,
+                obj.user.phone_number,
+                obj.user.profile_picture,
+                patient_info.title,
+                patient_info.age,
+                patient_info.address,
+                patient_info.health_today,
+                patient_info.allergies,
+                patient_info.medications,
+                patient_info.family_health_history,
+                patient_info.occupation,
+                patient_info.physical_activity,
+                patient_info.habits,
+                patient_info.busy_schedule,
+                patient_info.blood_group,
+                patient_info.height,
+                patient_info.weight,
+                patient_info.blood_group,
+                patient_info.disability,
+                patient_info.genotype,
+                patient_info.support_needed,
+                patient_info.emergency_contact_name,
+                patient_info.emergency_contact,
+                patient_info.emergency_contact_email,                
+                # Add more fields as per your requirement
+            ]
+            
+            # Count how many fields are filled
+            filled_fields = sum(field is not None for field in required_fields)
+            
+            # Calculate the percentage of completion
+            total_fields = len(required_fields)
+            completion_percentage = (filled_fields / total_fields) * 100
+            
+            completion_percentage = round(completion_percentage, 2)
+
+            return completion_percentage
+        return 0  # Profile Not Available
+
+class DoctorProfileCompletionSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='user.id')
+    user_name = serializers.CharField(source='user.name')
+    doctor_profile_completion = serializers.SerializerMethodField()
+    class Meta:
+        model = UserProfile
+        fields = ['user_id','user_name', 'user_type', 'doctor_profile_completion']
+
+    def get_doctor_profile_completion(self, obj):
+        doctor_info = Doctor.objects.filter(user=obj.user).first()
+        if doctor_info:
+            # Define required fields for profile completion
+            required_fields = [
+                obj.user.first_name,
+                obj.user.last_name,
+                obj.user.dob,
+                obj.user.phone_number,
+                obj.user.email,
+                obj.user.gender,
+                obj.user.phone_number,
+                obj.user.profile_picture,
+                doctor_info.age,
+                doctor_info.address,
+                doctor_info.about_doctor,
+                doctor_info.specialized,
+                doctor_info.qualification,
+                doctor_info.available_time,
+                doctor_info.working_days,
+                doctor_info.working_hours,
+                doctor_info.experience,
+            ]
+
+        # Count how many fields are filled
+            filled_fields = sum(field is not None for field in required_fields)
+            
+            # Calculate the percentage of completion
+            total_fields = len(required_fields)
+            completion_percentage = (filled_fields / total_fields) * 100
+            
+            completion_percentage = round(completion_percentage, 2)
+
+            return completion_percentage
+        return 0  # Profile Not Available
