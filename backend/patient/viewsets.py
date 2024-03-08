@@ -87,6 +87,16 @@ class TestResultUploadViewSet(ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def list(self, request):
+        queryset = TestResult.objects.all()
+        serializer = TestResultUploadSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
     def get_object(self):
         obj = self.get_queryset().get(pk=self.kwargs['pk'])
         self.check_object_permissions(self.request, obj)

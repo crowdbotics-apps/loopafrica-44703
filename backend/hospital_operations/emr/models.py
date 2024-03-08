@@ -14,7 +14,7 @@ from datetime import datetime
 def get_upload_medRec(instance, filename):    
     user_id = instance.user_id if instance.user_id else 'unknown_user'
     current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    
+    instance.test_results_signed = os.path.join('MRO', 'medrec', str(user_id), current_datetime, filename)
     return os.path.join('MRO', 'medrec', str(user_id), current_datetime, filename)
 
 class Base(models.Model):
@@ -50,7 +50,7 @@ class TestResult(Base):
     reference_ranges = models.CharField(max_length=100)
     result = models.CharField(max_length=100)
     test_results= models.FileField(upload_to=get_upload_medRec, null=True, blank=True)
-
+    test_reults_signed = models.CharField(max_length=10000, null=True, blank=True)
     # def save(self, *args, **kwargs):
     #     if self.pk is None:
     #         saved_image = self.test_results

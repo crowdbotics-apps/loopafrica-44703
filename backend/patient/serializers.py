@@ -48,6 +48,13 @@ class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         fields = '__all__'
+    
+    # @action(detail=False, methods=['patch'], parser_classes=[MultiPartParser, FormParser])
+    # def upload_test_results(self, request, user_id=None):
+    #     test_result = self.get_object()
+    #     test_result.test_results = request.data.get('test_results')
+    #     test_result.save()
+    #     return Response({'message': 'Test results uploaded successfully'}, status=status.HTTP_200_OK)
 
 class MedicalRecordSerializer(serializers.ModelSerializer):
     #test_results = TestResultSerializer(many=True, required=False)
@@ -111,6 +118,8 @@ class TestResultUploadSerializer(serializers.ModelSerializer):
                 'get_object', Params={'Bucket': 'loopafrica-44703', 'Key': object_key},
                 HttpMethod='GET'
             )
+            obj.test_reults_signed = signed_url
+            obj.save()
             return signed_url
         else:
             return None
