@@ -23,6 +23,8 @@ from home.api.v1.serializers import (
     FeedbackSerializer,
     AppointmentSerializer,
     UserProListSerializer,
+    PatientProfileCompletionSerializer,
+    DoctorProfileCompletionSerializer,
     SendPasswordResetEmailSerializer,
     ChangePasswordSerializer,
     DoctorSerializer,
@@ -175,6 +177,20 @@ class UserProfileViewSet(ModelViewSet):
         serializer = self.get_serializer(user_profile, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def profile_completion(self, request):
+        user_profile = self.get_queryset().first()
+        if user_profile.user_type == UserProfile.UserType.PATIENT:
+            serializer_class = PatientProfileCompletionSerializer
+        elif user_profile.user_type == UserProfile.UserType.DOCTOR:
+            serializer_class = DoctorProfileCompletionSerializer
+        else:
+            return Response({'error': 'Profile completion is not applicable for this user type.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = serializer_class(user_profile)
         return Response(serializer.data)
 
 class DoctorViewSet(ModelViewSet):
