@@ -37,7 +37,7 @@ class PhoneNumberViewset(ModelViewSet):
             try:
                 registered_email = TwoFactorAuth.objects.get(email=email)
                 if registered_email:
-                    message_content = '<strong>"Your OTP code is {}. Do not share with anyone.\n Thanks for using\n Loophealth"</strong>'.format(otp_code)
+                    message_content = "Your OTP code is {}. Do not share with anyone.\n Thanks for using\n Loophealth".format(otp_code)
                     data = {'subject': 'Loophealth 2FA code', 'body': message_content, 'to_email': email,}
                     if Verify.objects.filter(email=registered_email).exists():
                         t = Verify.objects.get(email=registered_email)
@@ -61,7 +61,7 @@ class VerifyViewSet(ModelViewSet):
     serializer_class = VerifySerializer
     http_method_names = ['delete']
     
-    @action(methods=['delete'], detail=False)
+    #@action(methods=['delete'], detail=False)
     def destroy(self, request, *args, **kwargs):
         """
         destroy verifies the otp and phone number or email match the opt code sent to the phone number or email. Deletes record after verifying.

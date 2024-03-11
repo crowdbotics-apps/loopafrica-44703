@@ -139,7 +139,7 @@ class MedicalRecordViewSet(ModelViewSet):
             to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
         else:
             to_date = None
-        print (f"from and to : {from_date}, {to_date}")
+        
         # Filter records based on user_id and date range if provided
         queryset = MedicalRecord.objects.all()
         if user_id:

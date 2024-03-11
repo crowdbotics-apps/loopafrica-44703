@@ -20,6 +20,7 @@ from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment
 from modules.two_factor_authentication.twofactorauth.utils import Util
+from modules.two_factor_authentication.twofactorauth.models import TwoFactorAuth
 
 
 import os
@@ -97,7 +98,8 @@ class SignupWithEmailSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data.get('password'))
         user.save()
-                    
+        two_factor_auth = TwoFactorAuth.objects.create(user=user, email=validated_data.get('email'))
+        two_factor_auth.save()            
         request = self._get_request()
         setup_user_email(request, user, [])
         return user
