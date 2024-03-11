@@ -33,10 +33,12 @@ class MedicalRecord(Base):
     frmdate = models.DateField(null=True, blank=True)
     todate = models.DateField(null=True, blank=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doc_medical_records', null=True, blank=True)
-    diagnosis = models.TextField()
-    symptoms = models.TextField()
-    tests_conducted = models.TextField()
-    medications_prescribed = models.TextField()
+    diagnosis = models.TextField(null=True, blank=True)
+    symptoms = models.TextField(null=True, blank=True)
+    tests_conducted = models.TextField(null=True, blank=True)
+    medications_prescribed = models.TextField(null=True, blank=True)
+    condition = models.CharField(max_length=255, null=True, blank=True)
+    status = models.CharField(max_length=255, null=True, blank=True)
     #records = models.FileField(upload_to=get_upload_medRec, null=True, blank=True)    
 
     def __str__(self):

@@ -60,7 +60,7 @@ class MedicalRecordSerializer(serializers.ModelSerializer):
     #test_results = TestResultSerializer(many=True, required=False)
     class Meta:
         model = MedicalRecord
-        fields = ['user', 'patient', 'date', 'frmdate', 'todate', 'doctor', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed',]
+        fields = ['user', 'patient', 'date', 'frmdate', 'todate', 'doctor', 'condition','status', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed']
 
     def get_medical_record_signed_url(self, obj):
         medical_record_url = obj.records.url if obj.records else None
