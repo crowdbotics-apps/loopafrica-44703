@@ -72,6 +72,7 @@ class TestResultViewSet(ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser,)
  
    
 class TestResultUploadViewSet(ModelViewSet):
