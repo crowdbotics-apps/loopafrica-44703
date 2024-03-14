@@ -24,7 +24,14 @@ function api_v1_changepassword_create(payload) {
   return silentseaAPI.post(`/api/v1/changepassword/`)
 }
 function api_v1_doctors_list(payload) {
-  return silentseaAPI.get(`/api/v1/doctors/`)
+  return silentseaAPI.get(`/api/v1/doctors/`, {
+    params: {
+      limit: payload.limit,
+      offset: payload.offset,
+      ordering: payload.ordering,
+      search: payload.search
+    }
+  })
 }
 function api_v1_doctors_create(payload) {
   return silentseaAPI.post(`/api/v1/doctors/`, payload)
