@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -12,6 +12,8 @@ from users.models import User, Feedback, Appointment, UserProfile, Doctor
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 from home.api.v1.serializers import (
@@ -197,10 +199,13 @@ class DoctorViewSet(ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
 
-    def list(self, request):
-        queryset = Doctor.objects.all()  # Get all doctors
-        serializer = DoctorSerializer(queryset, many=True)  # Serialize all doctors
-        return Response(serializer.data)
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    search_fields = ['user__full_name','user__first_name','user__last_name','specialized', 'qualification']
+    ordering_fields = ['user__full_name','user__firs_name','user__last_name','specialized']
+    ordering = ['user__full_name','user__first_name','user__last_name','specialized']
+
+    # Pagination
+    pagination_class = LimitOffsetPagination
     
     @action(detail=False, methods=['get'])
     def patient_count(self, request):
@@ -220,7 +225,7 @@ class DoctorViewSet(ModelViewSet):
         
         # Ensure Doctor queryset contains Doctor instances
         doctors = Doctor.objects.filter(specialized=specialized)
-        serializer = DoctorSerializer(doctors, many=True)  # Use many=True for multiple instances
+        serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
 
     
