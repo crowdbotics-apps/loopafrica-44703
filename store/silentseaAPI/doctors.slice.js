@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { apiService } from "./api"
-export const api_v1_doctors_list = createAsyncThunk(
-  "doctors/api_v1_doctors_list",
-  async payload => {
-    const response = await apiService.api_v1_doctors_list(payload)
-    return response.data
-  }
-)
 export const api_v1_doctors_create = createAsyncThunk(
   "doctors/api_v1_doctors_create",
   async payload => {
@@ -67,23 +60,6 @@ const doctorsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(api_v1_doctors_list.pending, (state, action) => {
-        if (state.api.loading === "idle") {
-          state.api.loading = "pending"
-        }
-      })
-      .addCase(api_v1_doctors_list.fulfilled, (state, action) => {
-        if (state.api.loading === "pending") {
-          state.entities = action.payload
-          state.api.loading = "idle"
-        }
-      })
-      .addCase(api_v1_doctors_list.rejected, (state, action) => {
-        if (state.api.loading === "pending") {
-          state.api.error = action.error
-          state.api.loading = "idle"
-        }
-      })
       .addCase(api_v1_doctors_create.pending, (state, action) => {
         if (state.api.loading === "idle") {
           state.api.loading = "pending"
@@ -243,7 +219,6 @@ const doctorsSlice = createSlice({
   }
 })
 export default {
-  api_v1_doctors_list,
   api_v1_doctors_create,
   api_v1_doctors_retrieve,
   api_v1_doctors_update,
