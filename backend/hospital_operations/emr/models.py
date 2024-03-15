@@ -44,7 +44,7 @@ class MedicalRecord(Base):
     def __str__(self):
         return f"{self.patient.user.username} - {self.date}"
 
-class TestResult(Base):        
+class TestResult(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_test_results', null=True, blank=True)
     medical_record = models.ForeignKey(MedicalRecord, on_delete=models.CASCADE, related_name='test_results', null=True, blank=True)
     test_name = models.CharField(max_length=100, null=True, blank=True)
