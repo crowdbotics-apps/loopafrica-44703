@@ -132,9 +132,6 @@ function api_v1_user_profiles_profile_completion_retrieve(payload) {
 function api_v1_user_profiles_update_profile_create(payload) {
   return silentseaAPI.post(`/api/v1/user-profiles/update_profile/`, payload)
 }
-function modules_contact_us_contact_us_create(payload) {
-  return silentseaAPI.post(`/modules/contact-us/contact_us/`)
-}
 function modules_inventory_management_category_list(payload) {
   return silentseaAPI.get(`/modules/inventory-management/category/`)
 }
@@ -304,6 +301,67 @@ function modules_inventory_management_supplier_destroy(payload) {
     `/modules/inventory-management/supplier/${payload.id}/`
   )
 }
+function modules_privacy_policy_list(payload) {
+  return silentseaAPI.get(`/modules/privacy-policy/`)
+}
+function modules_privacy_policy_create(payload) {
+  return silentseaAPI.post(`/modules/privacy-policy/`, payload)
+}
+function modules_privacy_policy_retrieve(payload) {
+  return silentseaAPI.get(`/modules/privacy-policy/${payload.id}/`)
+}
+function modules_privacy_policy_update(payload) {
+  return silentseaAPI.put(`/modules/privacy-policy/${payload.id}/`, payload)
+}
+function modules_privacy_policy_partial_update(payload) {
+  return silentseaAPI.patch(`/modules/privacy-policy/${payload.id}/`, payload)
+}
+function modules_privacy_policy_destroy(payload) {
+  return silentseaAPI.delete(`/modules/privacy-policy/${payload.id}/`)
+}
+function modules_push_notifications_notifications_list(payload) {
+  return silentseaAPI.get(`/modules/push-notifications/notifications/`)
+}
+function modules_push_notifications_notifications_create(payload) {
+  return silentseaAPI.post(
+    `/modules/push-notifications/notifications/`,
+    payload
+  )
+}
+function modules_push_notifications_notifications_retrieve(payload) {
+  return silentseaAPI.get(
+    `/modules/push-notifications/notifications/${payload.id}/`
+  )
+}
+function modules_push_notifications_notifications_destroy(payload) {
+  return silentseaAPI.delete(
+    `/modules/push-notifications/notifications/${payload.id}/`
+  )
+}
+function modules_terms_and_conditions_list(payload) {
+  return silentseaAPI.get(`/modules/terms-and-conditions/`)
+}
+function modules_terms_and_conditions_create(payload) {
+  return silentseaAPI.post(`/modules/terms-and-conditions/`, payload)
+}
+function modules_terms_and_conditions_retrieve(payload) {
+  return silentseaAPI.get(`/modules/terms-and-conditions/${payload.id}/`)
+}
+function modules_terms_and_conditions_update(payload) {
+  return silentseaAPI.put(
+    `/modules/terms-and-conditions/${payload.id}/`,
+    payload
+  )
+}
+function modules_terms_and_conditions_partial_update(payload) {
+  return silentseaAPI.patch(
+    `/modules/terms-and-conditions/${payload.id}/`,
+    payload
+  )
+}
+function modules_terms_and_conditions_destroy(payload) {
+  return silentseaAPI.delete(`/modules/terms-and-conditions/${payload.id}/`)
+}
 function patient_medical_records_list(payload) {
   return silentseaAPI.get(`/patient/medical_records/`)
 }
@@ -364,6 +422,14 @@ function patient_prescriptions_medicationlist_retrieve(payload) {
 function patient_prescriptions_medicationlist_retrieve_2(payload) {
   return silentseaAPI.get(
     `/patient/prescriptions/medicationlist/${payload.user_id}/`
+  )
+}
+function patient_prescriptions_todo_medication_retrieve(payload) {
+  return silentseaAPI.get(`/patient/prescriptions/todo_medication/`)
+}
+function patient_prescriptions_todo_medication_retrieve_2(payload) {
+  return silentseaAPI.get(
+    `/patient/prescriptions/todo_medication/${payload.user_id}/`
   )
 }
 function patient_test_results_list(payload) {
@@ -499,7 +565,6 @@ export const apiService = {
   api_v1_user_profiles_profile_retrieve,
   api_v1_user_profiles_profile_completion_retrieve,
   api_v1_user_profiles_update_profile_create,
-  modules_contact_us_contact_us_create,
   modules_inventory_management_category_list,
   modules_inventory_management_category_create,
   modules_inventory_management_category_retrieve,
@@ -536,6 +601,22 @@ export const apiService = {
   modules_inventory_management_supplier_update,
   modules_inventory_management_supplier_partial_update,
   modules_inventory_management_supplier_destroy,
+  modules_privacy_policy_list,
+  modules_privacy_policy_create,
+  modules_privacy_policy_retrieve,
+  modules_privacy_policy_update,
+  modules_privacy_policy_partial_update,
+  modules_privacy_policy_destroy,
+  modules_push_notifications_notifications_list,
+  modules_push_notifications_notifications_create,
+  modules_push_notifications_notifications_retrieve,
+  modules_push_notifications_notifications_destroy,
+  modules_terms_and_conditions_list,
+  modules_terms_and_conditions_create,
+  modules_terms_and_conditions_retrieve,
+  modules_terms_and_conditions_update,
+  modules_terms_and_conditions_partial_update,
+  modules_terms_and_conditions_destroy,
   patient_medical_records_list,
   patient_medical_records_create,
   patient_medical_records_retrieve,
@@ -556,6 +637,8 @@ export const apiService = {
   patient_prescriptions_destroy,
   patient_prescriptions_medicationlist_retrieve,
   patient_prescriptions_medicationlist_retrieve_2,
+  patient_prescriptions_todo_medication_retrieve,
+  patient_prescriptions_todo_medication_retrieve_2,
   patient_test_results_list,
   patient_test_results_create,
   patient_test_results_upload_list,
