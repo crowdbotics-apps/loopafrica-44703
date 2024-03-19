@@ -79,11 +79,11 @@ class TestResultSerializer(serializers.ModelSerializer):
             obj.save()
             return signed_url
         else:
-            return None
+            return None    
     
 
 class MedicalRecordSerializer(serializers.ModelSerializer):
-    #test_results = TestResultSerializer(many=True, required=False)
+    # test_results = TestResultSerializer(many=True, required=False)
     class Meta:
         model = MedicalRecord
         fields = ['user', 'patient', 'date', 'frmdate', 'todate', 'doctor', 'condition','status', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed']

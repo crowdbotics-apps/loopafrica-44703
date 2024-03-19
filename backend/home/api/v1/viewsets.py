@@ -8,7 +8,7 @@ from rest_framework import status, filters
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User, Feedback, Appointment, UserProfile, Doctor, LikeDoctor, ToDoList
+from users.models import User, Feedback, Appointment, UserProfile, Doctor, Subscription, ToDoList, LikeDoctor
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -36,7 +36,6 @@ from home.api.v1.serializers import (
     SubscriptionSerializer,
     ToDOListSerializer,
     LikeDoctorSerializer,
-
 )
 
 
@@ -214,6 +213,7 @@ class DoctorViewSet(ModelViewSet):
     # Pagination
     pagination_class = LimitOffsetPagination
     
+
     @action(detail=False, methods=['get'])
     def patient_count(self, request):
         doctor_id = request.query_params.get('doctor_id')
@@ -247,7 +247,7 @@ class DoctorViewSet(ModelViewSet):
     #     else:
     #         return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    
+    # 
     @action(detail=False, methods=['POST'])
     def like_or_dislike(self, request, pk=None):
         user = request.user

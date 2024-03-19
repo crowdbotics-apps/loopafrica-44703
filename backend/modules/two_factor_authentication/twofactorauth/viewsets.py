@@ -37,7 +37,7 @@ class PhoneNumberViewset(ModelViewSet):
             try:
                 registered_email = TwoFactorAuth.objects.get(email=email)
                 if registered_email:
-                    message_content = "Your OTP code is {}. Do not share with anyone.\n Thanks for using\n Loophealth".format(otp_code)
+                    message_content = "Your OTP code is {}. Do not share with anyone.\n Thanks for using Loophealth".format(otp_code)
                     data = {'subject': 'Loophealth 2FA code', 'body': message_content, 'to_email': email,}
                     if Verify.objects.filter(email=registered_email).exists():
                         t = Verify.objects.get(email=registered_email)
