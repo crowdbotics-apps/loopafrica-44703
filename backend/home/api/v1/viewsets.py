@@ -247,7 +247,7 @@ class DoctorViewSet(ModelViewSet):
     #     else:
     #         return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    # 
+    
     @action(detail=False, methods=['POST'])
     def like_or_dislike(self, request, pk=None):
         user = request.user
