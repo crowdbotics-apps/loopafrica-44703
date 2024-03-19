@@ -323,7 +323,7 @@ class ChangePasswordView(APIView):
 class SubscriptionViewSet(ViewSet):
     def create(self, request):
         url = "https://api.paystack.co/subscription"
-        secret_key = "sk_test_043e60e3f745df1bfe1dd27f52c0433b44282549"
+        secret_key = settings.PAYSTACK_SECRET_KEY
         headers = {
             "Authorization": f"Bearer {secret_key}",
             "Content-Type": "application/json"
@@ -348,7 +348,7 @@ class SubscriptionViewSet(ViewSet):
     def list(self, request):
         # Endpoint and secret key
         url = "https://api.paystack.co/subscription"
-        secret_key = "sk_test_043e60e3f745df1bfe1dd27f52c0433b44282549"
+        secret_key = settings.PAYSTACK_SECRET_KEY
         
         # Headers
         headers = {
@@ -382,7 +382,7 @@ class InitializeTransactionView(APIView):
        
        def post(self, request):
         initialize_url = "https://api.paystack.co/transaction/initialize"
-        secret_key = "sk_test_043e60e3f745df1bfe1dd27f52c0433b44282549"  
+        secret_key = settings.PAYSTACK_SECRET_KEY 
         headers = {
             "Authorization": f"Bearer {secret_key}",
             "Content-Type": "application/json"
@@ -415,7 +415,7 @@ class InitializeTransactionView(APIView):
 class PaystackCustomerViewSet(ViewSet):
     def create(self, request):
         url = "https://api.paystack.co/customer"
-        secret_key = "sk_test_043e60e3f745df1bfe1dd27f52c0433b44282549"  # Replace with your actual Paystack secret key
+        secret_key = settings.PAYSTACK_SECRET_KEY
         headers = {
             "Authorization": f"Bearer {secret_key}",
             "Content-Type": "application/json"
@@ -440,7 +440,7 @@ class PaystackCustomerViewSet(ViewSet):
         
     def retrieve(self, request, email_or_code):
         url = f"https://api.paystack.co/customer/{email_or_code}"
-        secret_key = "sk_test_043e60e3f745df1bfe1dd27f52c0433b44282549"  # Replace with your Paystack secret key
+        secret_key = settings.PAYSTACK_SECRET_KEY
         headers = {
             "Authorization": f"Bearer {secret_key}"
         }
