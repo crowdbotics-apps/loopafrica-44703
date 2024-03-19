@@ -44,20 +44,46 @@ class PrescriptionSerializer(serializers.ModelSerializer):
     def get_doctor_name(self, obj):
         return obj.doctor.user.username
 
-class TestResultSerializer(serializers.ModelSerializer):
+class TestResultSerializer(serializers.ModelSerializer):    
+    test_results_signed_url = serializers.SerializerMethodField()
+ 
     class Meta:
         model = TestResult
-        fields = '__all__'
+        fields = ['id', 'user', 'test_results', 'test_results_signed_url', 'test_name', 'units', 'reference_ranges', 'result']
+
     
-    # @action(detail=False, methods=['patch'], parser_classes=[MultiPartParser, FormParser])
-    # def upload_test_results(self, request, user_id=None):
-    #     test_result = self.get_object()
-    #     test_result.test_results = request.data.get('test_results')
-    #     test_result.save()
-    #     return Response({'message': 'Test results uploaded successfully'}, status=status.HTTP_200_OK)
+    def get_test_results_signed_url(self, obj):        
+        medical_record_url = obj.test_results.url if obj.test_results else None
+        
+        if medical_record_url:
+            parsed_url = urlparse(medical_record_url)
+            object_key = parsed_url.path[1:]  # Remove the leading slash
+
+            # Extract patient ID from the object
+            patient_id = self.context['request'].user.id
+            now = datetime.now()
+            date_time = now.strftime("%m-%d-%Y")
+
+            # Construct the object key in the format of patient_id/datetime/records/filename
+            file_name = os.path.basename(object_key)
+            folder_path = f"{str(patient_id)}/{str(date_time)}/records/{file_name}"
+
+            # Generate a signed URL using the constructed object key
+            s3 = boto3.client('s3', region_name=env.str("AWS_STORAGE_REGION", ""),
+                            config=boto3.session.Config(signature_version='s3v4'))
+            signed_url = s3.generate_presigned_url(
+                'get_object', Params={'Bucket': 'loopafrica-44703', 'Key': object_key},
+                HttpMethod='GET'
+            )
+            obj.test_reults_signed = signed_url
+            obj.save()
+            return signed_url
+        else:
+            return None    
+    
 
 class MedicalRecordSerializer(serializers.ModelSerializer):
-    #test_results = TestResultSerializer(many=True, required=False)
+    # test_results = TestResultSerializer(many=True, required=False)
     class Meta:
         model = MedicalRecord
         fields = ['user', 'patient', 'date', 'frmdate', 'todate', 'doctor', 'condition','status', 'diagnosis', 'symptoms', 'tests_conducted', 'medications_prescribed']

@@ -18,4 +18,5 @@ urlpatterns = [
     path('patient/', PatientListCreateView.as_view(), name='patient-list-create'),
     path('patient/<int:pk>/', PatientRetrieveUpdateDestroyView.as_view(), name='patient-detail'),
     path('prescriptions/medicationlist/<int:user_id>/', PrescriptionViewSet.as_view({'get': 'medicationlist'}), name='medicationlist'),
+    path('prescriptions/todo_medication/<int:user_id>/', PrescriptionViewSet.as_view({'get': 'todo_medication'}), name='todo_medication'),
 ]

@@ -34,6 +34,7 @@ env.read_env(env_file)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
+# PAYSTACK_SUBSCRIPTION_URL = os.environ.get("PAYSTACK_SUBSCRIPTION_URL")
 PAYSTACK_PUBLIC_KEY=os.environ.get('PAYSTACK_PUBLIC_KEY')
 PAYSTACK_PRIVATE_KEY=os.environ.get('PAYSTACK_SECRET_KEY')
 

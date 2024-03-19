@@ -138,12 +138,17 @@ class PatientInfo(models.Model):
 
     def __str__(self):
         return f"Patient Info for {self.user.username}"
-    
+        
 class Doctor(models.Model):
     SPECIALIZED_CHOICES = [
         ("dietician", "dietician"),
         ("general_medicine_practitioner", "General Medicine Practitioner"),
         ("geriatrician", "Geriatrician"),        
+        ("general_physician", "General Physician"),
+        ("mental_health", "Mental Health"),
+        ("practitioner", "Practitioner"),
+        ("ob_gyn", "OB-GYN"),
+        ("pt", "Physical Therapy"),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor', null=True, blank=True)
     doctor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -159,8 +164,31 @@ class Doctor(models.Model):
     last_updated_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')
 
+    # @property
+    # def likes_count(self):
+    #     return self.likes.count()
+    
     def __str__(self):
         return f"Doctor Info for {self.user.username}"
+
+class LikeDoctor(models.Model):
+    LIKE_CHOICES = [
+        ("1", "Like"),
+        ("0", "Dislike"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='like_doctor_user')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='like_doctor_doctor')
+    action = models.CharField(max_length=255, choices=LIKE_CHOICES, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='like_doctor_last_updated_by')
+
+    class Meta:
+        unique_together = ['user', 'doctor'] # Each user can like a doctor only once
+
+    def __str__(self):
+        return f"{self.action} for {self.doctor.user.username} by {self.user.username}"
 
 class Instructor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='instructor')
@@ -230,4 +258,54 @@ class Vitals(models.Model):
  
     def __str__(self):
         return f"Vitals of {self.patient_info.user.username} on {self.date}"
+        
+
+class Subscription(models.Model):
+    STANDARD = 'Standard'
+    PLUS = 'Plus'
+    PLAN_CHOICES = [
+        (STANDARD, 'Standard'),
+        (PLUS, 'Plus'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscription_user')
+    benefits = models.TextField(null=True, blank=True)
+    plan = models.CharField(max_length=255, null=True, blank=True, choices=PLAN_CHOICES)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=255, null=True, blank=True)  # Active, Inactive, Expired, Cancelled, Pending
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscription_created_by', null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='subscription_last_updated_by')
+    last_updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+
+    def __str__(self):
+        return f"Subscription for {self.user.username}'s {self.plan} plan" 
+
+class PaymentTransaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
+    transaction_id = models.CharField(max_length=255, null=True, blank=True)
+    amount = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    # currency = models.CharField(max_length=255, null=True, blank=True)
+    status = models.CharField(max_length=255, null=True, blank=True)
+    reference = models.CharField(max_length=255, null=True, blank=True)
+    # gateway_response = models.TextField(null=True, blank=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+    last_updated_at = models.DateTimeField(auto_now=True, editable=False, null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='payment_last_updated_by')
+    def __str__(self):
+        return f"Payment {self.transaction_id} for {self.user.username}'s subscription"
+    
+class ToDoList(models.Model):
+    task_name = models.TextField(blank=True)
+    completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.task_name
+   
     

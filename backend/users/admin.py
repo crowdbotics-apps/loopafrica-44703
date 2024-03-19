@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
-from .models import Doctor, Instructor, Feedback
+from .models import Doctor, Instructor, Feedback, Subscription
 
 from users.forms import UserChangeForm, UserCreationForm
 
@@ -25,3 +25,6 @@ class InstructorAdmin(admin.ModelAdmin):
 admin.site.register(Doctor, DoctorAdmin)
 admin.site.register(Instructor, InstructorAdmin)
 admin.site.register(Feedback)
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'plan','price', 'start_date', 'end_date', 'status')

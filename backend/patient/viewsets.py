@@ -63,6 +63,13 @@ class PrescriptionViewSet(ModelViewSet):
             return Response(response_data)
         else:
             return Response({"message": "Prescription not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    @action(detail=False, methods=['get'])
+    def todo_medication(self, request, user_id=None):
+        today = datetime.now()
+        todays_medications = Medication.objects.filter(prescription__user=user_id, frm__date__lte=today, to__date__gte=today)
+        serializer = MedicationSerializer(todays_medications, many=True)
+        return Response(serializer.data)
 
 # class MedicalRecordViewSet(ModelViewSet):
 #     queryset = MedicalRecord.objects.all()
@@ -72,6 +79,7 @@ class TestResultViewSet(ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser,)
  
    
 class TestResultUploadViewSet(ModelViewSet):

@@ -18,7 +18,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment
+from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment, Subscription, ToDoList, LikeDoctor
 from modules.two_factor_authentication.twofactorauth.utils import Util
 from modules.two_factor_authentication.twofactorauth.models import TwoFactorAuth
 
@@ -42,6 +42,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class PatientInfoSerializer(serializers.ModelSerializer):
     support_needed = serializers.MultipleChoiceField(choices=PatientInfo.SUPPORT_CHOICES, required=False, allow_blank=True, allow_null=True, write_only=True)
+    
     class Meta:
         model = PatientInfo
         fields = ['patient_id', 'title', 'age', 'address', 'age_range', 'health_today', 'allergies', 'medications','family_health_history','occupation', 'physical_activity','habits','busy_schedule', 'blood_group', 'height', 'weight', 'blood_group', 'disability', 'genotype','support_needed','emergency_contact_name','emergency_contact','emergency_contact_email']
@@ -119,16 +120,27 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
 
-class DoctorListSerializer(serializers.ModelSerializer):    
+class DoctorListSerializer(serializers.ModelSerializer): 
+    # likes_count = serializers.ReadOnlyField(source='like_doctor_doctor.count') # show total likes   
+    action = serializers.SerializerMethodField()
     class Meta:
         model = Doctor
-        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
+        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'action']
 
 class DoctorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    # likes_count = serializers.ReadOnlyField(source='like_doctor_doctor.count') # show total likes
+    action = serializers.SerializerMethodField()
+    
     class Meta:
         model = Doctor
-        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
+        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'action']
+
+class LikeDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LikeDoctor
+        fields = "__all__"
+
 
 class SignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -580,3 +592,13 @@ class DoctorProfileCompletionSerializer(serializers.ModelSerializer):
 
             return completion_percentage
         return 0  # Profile Not Available
+    
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+
+class ToDOListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToDoList
+        fields = '__all__'
