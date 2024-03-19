@@ -159,7 +159,7 @@ class Doctor(models.Model):
     qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
     available_time = models.TimeField(null=True, blank=True)
     working_days = models.CharField(max_length=255, null=True, blank=True)
-    working_hours = models.CharField(max_length=255, null=True, blank=True) 
+    working_hours = models.CharField(max_length=255, null=True, blank=True)
     experience = models.IntegerField(null=True, blank=True)
     last_updated_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')

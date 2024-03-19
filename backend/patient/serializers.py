@@ -118,7 +118,7 @@ class TestResultUploadSerializer(serializers.ModelSerializer):
  
     class Meta:
         model = TestResult
-        fields = ['id', 'test_results', 'test_results_signed_url']
+        fields = ['id', 'user', 'test_results', 'test_results_signed_url']
 
     
     def get_test_results_signed_url(self, obj):        

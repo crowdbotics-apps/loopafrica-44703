@@ -118,7 +118,7 @@ class SignupWithEmailSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
+        fields = ['id', 'email', 'full_name', 'first_name', 'last_name', 'dob','full_name','phone_number', 'gender', 'profile_picture']
 
 class DoctorListSerializer(serializers.ModelSerializer): 
     # likes_count = serializers.ReadOnlyField(source='like_doctor_doctor.count') # show total likes   

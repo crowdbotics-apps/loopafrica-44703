@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-
+import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum
@@ -11,7 +11,7 @@ from django.dispatch import receiver
 import os
 from datetime import datetime
 
-def get_upload_medRec(instance, filename):    
+def get_upload_medRec(instance, filename):        
     user_id = instance.user_id if instance.user_id else 'unknown_user'
     current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     instance.test_results_signed = os.path.join('MRO', 'medrec', str(user_id), current_datetime, filename)
@@ -47,36 +47,12 @@ class MedicalRecord(Base):
 class TestResult(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_test_results', null=True, blank=True)
     medical_record = models.ForeignKey(MedicalRecord, on_delete=models.CASCADE, related_name='test_results', null=True, blank=True)
-    test_name = models.CharField(max_length=100)
-    units = models.CharField(max_length=100)
-    reference_ranges = models.CharField(max_length=100)
-    result = models.CharField(max_length=100)
+    test_name = models.CharField(max_length=100, null=True, blank=True)
+    units = models.CharField(max_length=100, null=True, blank=True)
+    reference_ranges = models.CharField(max_length=100, null=True, blank=True)
+    result = models.CharField(max_length=100, null=True, blank=True)
     test_results= models.FileField(upload_to=get_upload_medRec, null=True, blank=True)
     test_reults_signed = models.CharField(max_length=10000, null=True, blank=True)
-    # def save(self, *args, **kwargs):
-    #     if self.pk is None:
-    #         saved_image = self.test_results
-    #         self.test_results = None
-    #         super(TestResult, self).save(*args, **kwargs)
-    #         self.test_results = saved_image
-    #         self.save(*args, **kwargs)
-    #     else:
-    #         super(TestResult, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.test_name} - {self.result}"
-
-# @receiver(post_save, sender=TestResult)
-# def update_test_result(sender, instance, created, **kwargs):
-#     if created:
-#         if instance.user_id:
-#             user_id = instance.user_id
-#         else:
-#             user_id = 'unknown_user'
-#         print("instance", instance)
-#         # current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-#         # file_name = instance.test_results.name.split('/')[-1]
-#         # file_path = os.path.join('MRO', 'medrec', str(user_id), str(current_datetime), file_name)
-        
-#         # instance.test_results.name = file_path
-#         # instance.save()
