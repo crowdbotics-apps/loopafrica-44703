@@ -122,19 +122,53 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DoctorListSerializer(serializers.ModelSerializer): 
     # likes_count = serializers.ReadOnlyField(source='like_doctor_doctor.count') # show total likes   
-    action = serializers.SerializerMethodField()
+    # action = serializers.SerializerMethodField()
     class Meta:
         model = Doctor
-        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'action']
+        fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience']
+
+# class DoctorSerializer(serializers.ModelSerializer):
+#     user = UserSerializer()
+#     like_action = serializers.SerializerMethodField('get_like_action')
+#     # likes_count = serializers.ReadOnlyField(source='like_doctor_doctor.count') # show total likes
+#     # action = serializers.SerializerMethodField()
+
+#     def get_like_action(self, obj):
+#         user = self.context['request'].user
+
+#         # Check if the user is authenticated
+#         if user.is_authenticated:
+#             # Get the user's most recent action on the post
+#             recent_action = obj.LikeDoctor.filter(user=user).order_by('-id').first()
+#             return recent_action.action if recent_action else 0
+
+#         return 0  # Default value if the user is not authenticated
+
+    
+    
+#     class Meta:
+#         model = Doctor
+#         fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'like_action']
 
 class DoctorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    # likes_count = serializers.ReadOnlyField(source='like_doctor_doctor.count') # show total likes
-    action = serializers.SerializerMethodField()
-    
+    like_action = serializers.SerializerMethodField()
+
     class Meta:
         model = Doctor
-        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'action']
+        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'like_action']
+
+    def get_like_action(self, obj):
+        user = self.context['request'].user
+
+        # Check if the user is authenticated
+        if user.is_authenticated:
+            # Get the user's most recent action on the doctor
+            recent_action = obj.like_doctor_doctor.filter(user=user).order_by('-id').first()
+            return recent_action.action if recent_action else 0
+
+        return 0  # Default value if the user is not authenticated
+    
 
 class LikeDoctorSerializer(serializers.ModelSerializer):
     class Meta:

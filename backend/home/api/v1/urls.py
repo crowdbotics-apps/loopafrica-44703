@@ -29,7 +29,7 @@ router.register("feedback", FeedbackViewSet, basename="feedback")
 router.register(r'user-profiles', UserProfileViewSet, basename='user-profiles')
 router.register(r'doctors', DoctorViewSet, basename='doctors')
 router.register(r'subscriptions', SubscriptionViewSet, basename='subscriptions')
-router.register(r'tasks', ToDoListViewSet, basename='tasks')
+router.register(r'todo', ToDoListViewSet, basename='todo-list')
 # router.register(r'paystack-customer', PaystackCustomerViewSet, basename='paystack-customer')
 
 

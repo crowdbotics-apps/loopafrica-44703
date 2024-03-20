@@ -159,7 +159,7 @@ class Doctor(models.Model):
     qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
     available_time = models.TimeField(null=True, blank=True)
     working_days = models.CharField(max_length=255, null=True, blank=True)
-    working_hours = models.CharField(max_length=255, null=True, blank=True)
+    working_hours = models.CharField(max_length=255, null=True, blank=True) 
     experience = models.IntegerField(null=True, blank=True)
     last_updated_date = models.DateTimeField(auto_now=True)
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctor_last_updated_by')
@@ -189,6 +189,21 @@ class LikeDoctor(models.Model):
 
     def __str__(self):
         return f"{self.action} for {self.doctor.user.username} by {self.user.username}"
+    
+    def save(self, *args, **kwargs):
+        existing_like = LikeDoctor.objects.filter(doctor=self.doctor, user=self.user).first()
+
+        if not existing_like and self.action == '1':
+            # Save the current state if the user hasn't liked the doctor before
+            super().save(*args, **kwargs)
+
+        elif existing_like and self.action == '0':
+            # If the user has already liked the doctor and is disliking it
+            super(LikeDoctor, existing_like).delete()
+
+        # Update like_count for the associated Doctor
+        # like_count = LikeDoctor.objects.filter(doctor=self.doctor, action='1').count()
+        # Doctor.objects.filter(pk=self.doctor.pk).update(like_count=like_count)
 
 class Instructor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='instructor')
@@ -300,7 +315,7 @@ class PaymentTransaction(models.Model):
         return f"Payment {self.transaction_id} for {self.user.username}'s subscription"
     
 class ToDoList(models.Model):
-    task_name = models.TextField(blank=True)
+    title = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

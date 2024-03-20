@@ -16,7 +16,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 import requests
 from django.conf import settings
-from django.db.models import Count, Q, F
+from django.db.models import Case, When, Value, IntegerField
 
 
 from home.api.v1.serializers import (
@@ -284,9 +284,27 @@ class DoctorViewSet(ModelViewSet):
         action_text = 'liked' if action == '1' else 'disliked'
         return Response({'detail': f'Doctor {action_text} successfully.'}, status=status.HTTP_200_OK)
     
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     queryset = Doctor.objects.annotate(liked_by_user=Count('liked_doctors', filter=Q(liked_doctors__user=user, liked_doctors__doctor=F('id')))).order_by('-liked_by_user')
+    #     return queryset
+
     def get_queryset(self):
         user = self.request.user
-        queryset = Doctor.objects.annotate(liked_by_user=Count('liked_doctors', filter=Q(liked_doctors__user=user, liked_doctors__doctor=F('id')))).order_by('-liked_by_user')
+        queryset = Doctor.objects.all()
+
+        # Annotate each doctor with a field indicating whether the current user liked them or not
+        queryset = queryset.annotate(
+            liked_by_user=Case(
+                When(like_doctor_doctor__user=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+        )
+
+        # Order the queryset based on whether the user liked the doctor or not
+        queryset = queryset.order_by('-liked_by_user', 'user__username')
+
         return queryset
 
 
