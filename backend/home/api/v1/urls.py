@@ -14,12 +14,7 @@ from home.api.v1.viewsets import (
     SendPasswordResetEmailView,
     ChangePasswordView,
     DoctorViewSet,
-    SubscriptionViewSet,
     ToDoListViewSet,
-    InitializeTransactionView,
-    # VerifyTransactionView,
-    PaystackCustomerViewSet,
-    
 )
 
 router = DefaultRouter()
@@ -28,9 +23,8 @@ router.register("login", LoginViewSet, basename="login")
 router.register("feedback", FeedbackViewSet, basename="feedback")
 router.register(r'user-profiles', UserProfileViewSet, basename='user-profiles')
 router.register(r'doctors', DoctorViewSet, basename='doctors')
-router.register(r'subscriptions', SubscriptionViewSet, basename='subscriptions')
 router.register(r'todo', ToDoListViewSet, basename='todo-list')
-# router.register(r'paystack-customer', PaystackCustomerViewSet, basename='paystack-customer')
+
 
 
 urlpatterns = [
@@ -43,10 +37,6 @@ urlpatterns = [
     path('appointments/update-feedback/', AppointmentViewSet.as_view({'patch': 'update_feedback'}), name='update_feedback'),
     path('appointments/create/', AppointmentViewSet.as_view({'post':'create'}), name='create_appointment'),
     path('appointments/todo_appointments/<int:user_id>/', AppointmentViewSet.as_view({'get': 'todo_appointments'}), name='todo_appointments'),
-    path('doctors/<int:pk>/like_or_dislike/', DoctorViewSet.as_view({'post': 'like_or_dislike'}), name='like_or_dislike_doctor'),
     path('appointments/', AppointmentViewSet.as_view({'get':'list'}), name='list_appointments'),
     path('appointments/<int:pk>/', AppointmentViewSet.as_view({'get':'retrieve'}), name='get_appointment'),   
-    path('initialize-transaction/', InitializeTransactionView.as_view(), name='initialize-transaction'),
-    path('paystack-customer/', PaystackCustomerViewSet.as_view({'post':'create'}),name='paystack-customer'),
-    path('paystack-customer/<str:email_or_code>/', PaystackCustomerViewSet.as_view({'get':'retrieve'}), name='paystack-customer'),
 ]

@@ -8,15 +8,13 @@ from rest_framework import status, filters
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User, Feedback, Appointment, UserProfile, Doctor, Subscription, ToDoList, LikeDoctor
+from users.models import User, Feedback, Appointment, UserProfile, Doctor, ToDoList
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 import requests
-from django.conf import settings
-from django.db.models import Case, When, Value, IntegerField
 from datetime import datetime
 
 
@@ -34,9 +32,7 @@ from home.api.v1.serializers import (
     SendPasswordResetEmailSerializer,
     ChangePasswordSerializer,
     DoctorSerializer,
-    SubscriptionSerializer,
     ToDOListSerializer,
-    LikeDoctorSerializer,
 )
 
 
@@ -242,64 +238,7 @@ class DoctorViewSet(ModelViewSet):
         doctors = Doctor.objects.filter(specialized=specialized)
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
-     
-    @action(detail=False, methods=['POST'])
-    def like_or_dislike(self, request, pk=None):
-        user = request.user
-        doctor = get_object_or_404(Doctor, pk=pk)
-        action = request.data.get('action')
-
-        # Ensure action is provided
-        if action is None:
-            return Response({'error': 'Action parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if the action is valid
-        if action not in ['0', '1']:
-            return Response({'error': 'Invalid action parameter. Use "0" for dislike or "1" for like.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if the user has already performed the same action on the doctor
-        existing_like = LikeDoctor.objects.filter(doctor=doctor, user=user).first()
-        if existing_like and existing_like.action == action:
-            action_text = 'liked' if action == '1' else 'disliked'
-            return Response({'error': f'You have already {action_text} this doctor.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Create or update the LikeDoctor object based on the action
-        if existing_like:
-            existing_like.action = action
-            existing_like.save()
-        else:
-            LikeDoctor.objects.create(doctor=doctor, user=user, action=action)
-
-        
-        # Update the likes_count for the associated doctor
-        # like_count = LikeDoctor.objects.filter(doctor=doctor, action='1').count()
-        # doctor.likes_count = like_count
-        # doctor.save()
-
-        action_text = 'liked' if action == '1' else 'disliked'
-        return Response({'detail': f'Doctor {action_text} successfully.'}, status=status.HTTP_200_OK)
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Doctor.objects.all()
-
-        # Annotate each doctor with a field indicating whether the current user liked them or not
-        queryset = queryset.annotate(
-            liked_by_user=Case(
-                When(like_doctor_doctor__user=user, then=Value(1)),
-                default=Value(0),
-                output_field=IntegerField(),
-            )
-        )
-
-        # Order the queryset based on whether the user liked the doctor or not
-        queryset = queryset.order_by('-liked_by_user', 'user__username')
-
-        return queryset
-
-
-         
-    
+      
 class SendPasswordResetEmailView(APIView):
     def post(self, request, format=None):
         serializer=SendPasswordResetEmailSerializer(data=request.data)
@@ -328,52 +267,6 @@ class ChangePasswordView(APIView):
             }
             return Response(data=response_data, status=status.HTTP_400_BAD_REQUEST)
         
-class SubscriptionViewSet(ViewSet):
-    def create(self, request):
-        url = "https://api.paystack.co/subscription"
-        secret_key = settings.PAYSTACK_SECRET_KEY
-        headers = {
-            "Authorization": f"Bearer {secret_key}",
-            "Content-Type": "application/json"
-        }
-
-        data = {
-            "customer": request.data.get("customer"),
-            "plan": request.data.get("plan")
-        }
-
-        # Make the request to Paystack
-        response = requests.post(url, headers=headers, json=data)
-
-        # Check response status
-        if response.status_code == 200:
-            # Subscription successful
-            return Response(response.json(), status=status.HTTP_200_OK)
-        else:
-            # Other errors
-            return Response(response.json(), status=response.status_code) 
-        
-    def list(self, request):
-        # Endpoint and secret key
-        url = "https://api.paystack.co/subscription"
-        secret_key = settings.PAYSTACK_SECRET_KEY
-        
-        # Headers
-        headers = {
-            "Authorization": f"Bearer {secret_key}"
-        }
-        
-        # Make the request to Paystack
-        response = requests.get(url, headers=headers)
-
-        # Check response status
-        if response.status_code == 200:
-
-            # Return subscriptions
-            return Response(response.json(), status=status.HTTP_200_OK)
-        else:
-            # Error
-            return Response(response.json(), status=response.status_code)
 
 class ToDoListViewSet(ModelViewSet):
     queryset = ToDoList.objects.all()
@@ -386,79 +279,3 @@ class ToDoListViewSet(ModelViewSet):
         completed_tasks.delete()
         return Response(status=204)
     
-class InitializeTransactionView(APIView):
-       
-       def post(self, request):
-        initialize_url = "https://api.paystack.co/transaction/initialize"
-        secret_key = settings.PAYSTACK_SECRET_KEY 
-        headers = {
-            "Authorization": f"Bearer {secret_key}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "email": request.data.get('email'),
-            "amount": request.data.get('amount'),
-        }
-
-        initialise_response = requests.post(initialize_url, headers=headers, json=data)
-
-        if initialise_response.status_code == 200:
-            # Transaction initialized 
-            initialize_data = initialise_response.json()
-            reference = initialize_data.get('data', {}).get('reference')
-            if reference:
-                verify_url = f"https://api.paystack.co/transaction/verify/{reference}"
-                verify_response = requests.get(verify_url, headers=headers)
-
-                if verify_response.status_code == 200:
-                    # Payment verified successfully
-                    return Response({"message": "Payment initialized and verified successfully", "data": verify_response.json()}, status=status.HTTP_200_OK)
-
-                # Payment verification failed
-                return Response({"error": "Payment verification failed", "data": verify_response.json()}, status=verify_response.status_code)
-
-        # Transaction initialization failed
-        return Response({"error": "Transaction initialization failed", "data": initialise_response.json()}, status=initialise_response.status_code)  
-
-class PaystackCustomerViewSet(ViewSet):
-    def create(self, request):
-        url = "https://api.paystack.co/customer"
-        secret_key = settings.PAYSTACK_SECRET_KEY
-        headers = {
-            "Authorization": f"Bearer {secret_key}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "email": request.data.get('email'),
-            "first_name": request.data.get('first_name'),
-            "last_name": request.data.get('last_name'),
-            
-        }
-
-        response = requests.post(url, headers=headers, json=data)
-
-        if response.status_code == 201:
-            # Customer created successfully
-            customer_data = response.json()
-            return Response(customer_data, status=status.HTTP_201_CREATED)
-        else:
-            # Error creating customer
-            error_data = response.json()
-            return Response(error_data, status=response.status_code)
-        
-    def retrieve(self, request, email_or_code):
-        url = f"https://api.paystack.co/customer/{email_or_code}"
-        secret_key = settings.PAYSTACK_SECRET_KEY
-        headers = {
-            "Authorization": f"Bearer {secret_key}"
-        }
-
-        # Making the request to Paystack
-        response = requests.get(url, headers=headers)
-
-        # Checking response status and returning appropriate response
-        if response.status_code == 200:
-            return Response(response.json(), status=status.HTTP_200_OK)
-        else:
-            return Response(response.json(), status=response.status_code)
-   
