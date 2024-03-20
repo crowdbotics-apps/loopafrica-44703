@@ -42,6 +42,7 @@ urlpatterns = [
     path('changepassword/',ChangePasswordView.as_view(), name='changepassword'),
     path('appointments/update-feedback/', AppointmentViewSet.as_view({'patch': 'update_feedback'}), name='update_feedback'),
     path('appointments/create/', AppointmentViewSet.as_view({'post':'create'}), name='create_appointment'),
+    path('appointments/todo_appointments/<int:user_id>/', AppointmentViewSet.as_view({'get': 'todo_appointments'}), name='todo_appointments'),
     path('doctors/<int:pk>/like_or_dislike/', DoctorViewSet.as_view({'post': 'like_or_dislike'}), name='like_or_dislike_doctor'),
     path('appointments/', AppointmentViewSet.as_view({'get':'list'}), name='list_appointments'),
     path('appointments/<int:pk>/', AppointmentViewSet.as_view({'get':'retrieve'}), name='get_appointment'),   

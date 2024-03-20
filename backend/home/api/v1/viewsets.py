@@ -17,6 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 import requests
 from django.conf import settings
 from django.db.models import Case, When, Value, IntegerField
+from datetime import datetime
 
 
 from home.api.v1.serializers import (
@@ -164,6 +165,13 @@ class AppointmentViewSet(ModelViewSet):
 
         serializer = AppointmentSerializer(appointment)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def todo_appointments(self, request, user_id=None):
+        today = datetime.now().date()
+        today_appointments = Appointment.objects.filter(user=user_id, date=today)
+        serializer = AppointmentSerializer(today_appointments, many=True)
+        return Response(serializer.data)
 
 class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -234,20 +242,7 @@ class DoctorViewSet(ModelViewSet):
         doctors = Doctor.objects.filter(specialized=specialized)
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
-    
-    # @action(detail=True, methods=['POST'])
-    # def like_doctor(self, request, pk):
-    #     # doctor = self.get_object()
-    #     doctor = Doctor.objects.filter(pk=pk).first()
-    #     if doctor:
-    #         doctor.likes += 1
-    #         doctor.save()
-    #         serializer = DoctorSerializer(doctor)
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     else:
-    #         return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    # 
+     
     @action(detail=False, methods=['POST'])
     def like_or_dislike(self, request, pk=None):
         user = request.user
@@ -283,11 +278,6 @@ class DoctorViewSet(ModelViewSet):
 
         action_text = 'liked' if action == '1' else 'disliked'
         return Response({'detail': f'Doctor {action_text} successfully.'}, status=status.HTTP_200_OK)
-    
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     queryset = Doctor.objects.annotate(liked_by_user=Count('liked_doctors', filter=Q(liked_doctors__user=user, liked_doctors__doctor=F('id')))).order_by('-liked_by_user')
-    #     return queryset
 
     def get_queryset(self):
         user = self.request.user
@@ -319,7 +309,7 @@ class SendPasswordResetEmailView(APIView):
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
- 
+
     def post(self, request):
         user = request.user
         serializer = ChangePasswordSerializer(instance=user, data=request.data)
