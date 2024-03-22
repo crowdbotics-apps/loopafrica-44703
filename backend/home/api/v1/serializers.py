@@ -18,7 +18,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment
+from users.models import User, UserProfile, PatientInfo, Doctor, Instructor, Feedback, Appointment, ToDoList, LikeDoctor
 from modules.two_factor_authentication.twofactorauth.utils import Util
 from modules.two_factor_authentication.twofactorauth.models import TwoFactorAuth
 
@@ -127,9 +127,21 @@ class DoctorListSerializer(serializers.ModelSerializer):
 
 class DoctorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    #favourite = serializers.SerializerMethodField()
+ 
     class Meta:
         model = Doctor
-        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
+        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience']
+   
+    # def get_favourite(self, obj):
+    #     user = self.context['request'].user
+ 
+    #     # Check if the user is authenticated
+    #     if user.is_authenticated:
+    #         # Get the user's most recent action on the doctor
+    #         recent_action = obj.like_doctor_doctor.filter(user=user).order_by('-id').first()
+    #         return recent_action.favourite if recent_action else 0
+    #     return 0
 
 class SignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -581,3 +593,13 @@ class DoctorProfileCompletionSerializer(serializers.ModelSerializer):
 
             return completion_percentage
         return 0  # Profile Not Available
+    
+class ToDOListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToDoList
+        fields = '__all__'
+
+class LikeDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LikeDoctor
+        fields = "__all__"
