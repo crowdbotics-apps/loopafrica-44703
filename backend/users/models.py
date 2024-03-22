@@ -141,9 +141,9 @@ class PatientInfo(models.Model):
     
 class Doctor(models.Model):
     SPECIALIZED_CHOICES = [
-        ("dietician", "dietician"),
-        ("general_medicine_practitioner", "General Medicine Practitioner"),
-        ("geriatrician", "Geriatrician"),        
+        # ("dietician", "dietician"),
+        # ("general_medicine_practitioner", "General Medicine Practitioner"),
+        # ("geriatrician", "Geriatrician"),        
         ("general_physician", "General Physician"),
         ("mental_health", "Mental Health"),
         ("practitioner", "Practitioner"),
@@ -236,3 +236,35 @@ class Vitals(models.Model):
     def __str__(self):
         return f"Vitals of {self.patient_info.user.username} on {self.date}"
     
+class ToDoList(models.Model):
+    title = models.TextField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
+    completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='todo_created_by')
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='todo_updated_by')
+ 
+    def __str__(self):
+        return self.title
+    
+class LikeDoctor(models.Model):
+    FAVOURITE_CHOICES = [
+        ("1", "Like"),
+        ("0", "Dislike"),
+    ]
+ 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='like_doctor_user')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='like_doctor_doctor')
+    favourite = models.CharField(max_length=255, choices=FAVOURITE_CHOICES, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_updated_date = models.DateTimeField(auto_now=True)
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='like_doctor_last_updated_by')
+ 
+    class Meta:
+        unique_together = ['user', 'doctor'] # Each user can like a doctor only once
+       
+ 
+    def __str__(self):
+        return f"{self.favourite} for {self.doctor.user.username} by {self.user.username}"
+ 

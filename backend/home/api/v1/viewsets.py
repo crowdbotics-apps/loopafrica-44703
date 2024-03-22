@@ -8,12 +8,13 @@ from rest_framework import status, filters
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from users.models import User, Feedback, Appointment, UserProfile, Doctor
+from users.models import User, Feedback, Appointment, UserProfile, Doctor, ToDoList, LikeDoctor
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from datetime import datetime
 
 
 from home.api.v1.serializers import (
@@ -30,6 +31,7 @@ from home.api.v1.serializers import (
     SendPasswordResetEmailSerializer,
     ChangePasswordSerializer,
     DoctorSerializer,
+    ToDOListSerializer,
 )
 
 
@@ -158,6 +160,14 @@ class AppointmentViewSet(ModelViewSet):
 
         serializer = AppointmentSerializer(appointment)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def todo_appointments(self, request, user_id=None):
+        today = datetime.now().date()
+        today_appointments = Appointment.objects.filter(user=user_id, date=today)
+        serializer = AppointmentSerializer(today_appointments, many=True)
+        return Response(serializer.data)
+
 
 class UserProfileViewSet(ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -206,6 +216,10 @@ class DoctorViewSet(ModelViewSet):
 
     # Pagination
     pagination_class = LimitOffsetPagination
+
+    # def filter_queryset(self, queryset):
+    #     user = self.request.user
+    #     return queryset.filter(like_doctor_doctor__isnull=False).order_by('-like_doctor_doctor__favourite')
     
     @action(detail=False, methods=['get'])
     def patient_count(self, request):
@@ -227,6 +241,36 @@ class DoctorViewSet(ModelViewSet):
         doctors = Doctor.objects.filter(specialized=specialized)
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['POST'])
+    def favourite(self, request, pk=None):
+        user = request.user
+        doctor = get_object_or_404(Doctor, pk=pk)
+        favourite = request.data.get('favourite')
+
+        # Ensure favourite is provided
+        if favourite is None:
+            return Response({'error': 'Favourite parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the favourite is valid
+        if favourite not in ['0', '1']:
+            return Response({'error': 'Invalid favourite parameter. Use "0" for unfavourite or "1" for favourite.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the user has already performed the same action on the doctor
+        existing_like = LikeDoctor.objects.filter(doctor=doctor, user=user).first()
+        if existing_like and existing_like.favourite == favourite:
+            action_text = 'favourite' if favourite == '1' else 'unfavourite'
+            return Response({'error': f'Doctor {doctor.user.username} is already added in your {action_text} list.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Create or update the LikeDoctor object based on the action
+        if existing_like:
+            existing_like.favourite = favourite
+            existing_like.save()
+        else:
+            LikeDoctor.objects.create(doctor=doctor, user=user, favourite=favourite)
+        
+        action_text = 'favourite' if favourite == '1' else 'unfavourite'
+        return Response({'detail': f'Doctor {doctor.user.username} added to your {action_text} list.'}, status=status.HTTP_200_OK)
 
     
 class SendPasswordResetEmailView(APIView):
@@ -256,3 +300,14 @@ class ChangePasswordView(APIView):
                 'errors': serializer.errors
             }
             return Response(data=response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+class ToDoListViewSet(ModelViewSet):
+    queryset = ToDoList.objects.all()
+    serializer_class = ToDOListSerializer
+    permission_classes = [IsAuthenticated]
+ 
+    @action(detail=False, methods=['delete'])
+    def delete_completed(self, request):
+        completed_tasks = ToDoList.objects.filter(completed=True)
+        completed_tasks.delete()
+        return Response(status=204)
