@@ -17,6 +17,11 @@ function api_v1_appointments_retrieve(payload) {
 function api_v1_appointments_create_create(payload) {
   return silentseaAPI.post(`/api/v1/appointments/create/`, payload)
 }
+function api_v1_appointments_todo_appointments_retrieve(payload) {
+  return silentseaAPI.get(
+    `/api/v1/appointments/todo_appointments/${payload.user_id}/`
+  )
+}
 function api_v1_appointments_update_feedback_partial_update(payload) {
   return silentseaAPI.patch(`/api/v1/appointments/update-feedback/`, payload)
 }
@@ -48,8 +53,14 @@ function api_v1_doctors_partial_update(payload) {
 function api_v1_doctors_destroy(payload) {
   return silentseaAPI.delete(`/api/v1/doctors/${payload.id}/`)
 }
+function api_v1_doctors_favourite_create_2(payload) {
+  return silentseaAPI.post(`/api/v1/doctors/${payload.id}/favourite/`, payload)
+}
 function api_v1_doctors_doctor_specialized_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/doctors/doctor_specialized/`)
+}
+function api_v1_doctors_favourite_create(payload) {
+  return silentseaAPI.post(`/api/v1/doctors/favourite/`, payload)
 }
 function api_v1_doctors_patient_count_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/doctors/patient_count/`)
@@ -92,6 +103,27 @@ function api_v1_signup_create(payload) {
 }
 function api_v1_signup_with_email_create(payload) {
   return silentseaAPI.post(`/api/v1/signup-with-email/`, payload)
+}
+function api_v1_todo_list(payload) {
+  return silentseaAPI.get(`/api/v1/todo/`)
+}
+function api_v1_todo_create(payload) {
+  return silentseaAPI.post(`/api/v1/todo/`, payload)
+}
+function api_v1_todo_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/todo/${payload.id}/`)
+}
+function api_v1_todo_update(payload) {
+  return silentseaAPI.put(`/api/v1/todo/${payload.id}/`, payload)
+}
+function api_v1_todo_partial_update(payload) {
+  return silentseaAPI.patch(`/api/v1/todo/${payload.id}/`, payload)
+}
+function api_v1_todo_destroy(payload) {
+  return silentseaAPI.delete(`/api/v1/todo/${payload.id}/`)
+}
+function api_v1_todo_delete_completed_destroy(payload) {
+  return silentseaAPI.delete(`/api/v1/todo/delete_completed/`)
 }
 function api_v1_update_profile_pic_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/update-profile-pic/${payload.id}/`)
@@ -530,6 +562,7 @@ export const apiService = {
   api_v1_appointments_list,
   api_v1_appointments_retrieve,
   api_v1_appointments_create_create,
+  api_v1_appointments_todo_appointments_retrieve,
   api_v1_appointments_update_feedback_partial_update,
   api_v1_changepassword_create,
   api_v1_doctors_list,
@@ -538,7 +571,9 @@ export const apiService = {
   api_v1_doctors_update,
   api_v1_doctors_partial_update,
   api_v1_doctors_destroy,
+  api_v1_doctors_favourite_create_2,
   api_v1_doctors_doctor_specialized_retrieve,
+  api_v1_doctors_favourite_create,
   api_v1_doctors_patient_count_retrieve,
   api_v1_edit_user_retrieve,
   api_v1_edit_user_update,
@@ -553,6 +588,13 @@ export const apiService = {
   api_v1_sendresetpasswordemail_create,
   api_v1_signup_create,
   api_v1_signup_with_email_create,
+  api_v1_todo_list,
+  api_v1_todo_create,
+  api_v1_todo_retrieve,
+  api_v1_todo_update,
+  api_v1_todo_partial_update,
+  api_v1_todo_destroy,
+  api_v1_todo_delete_completed_destroy,
   api_v1_update_profile_pic_retrieve,
   api_v1_update_profile_pic_update,
   api_v1_update_profile_pic_partial_update,
