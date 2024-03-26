@@ -59,6 +59,9 @@ function api_v1_doctors_favourite_create_2(payload) {
 function api_v1_doctors_doctor_specialized_retrieve(payload) {
   return silentseaAPI.get(`/api/v1/doctors/doctor_specialized/`)
 }
+function api_v1_doctors_favourite_retrieve(payload) {
+  return silentseaAPI.get(`/api/v1/doctors/favourite/`)
+}
 function api_v1_doctors_favourite_create(payload) {
   return silentseaAPI.post(`/api/v1/doctors/favourite/`, payload)
 }
@@ -163,6 +166,9 @@ function api_v1_user_profiles_profile_completion_retrieve(payload) {
 }
 function api_v1_user_profiles_update_profile_create(payload) {
   return silentseaAPI.post(`/api/v1/user-profiles/update_profile/`, payload)
+}
+function modules_contact_us_contact_us_create(payload) {
+  return silentseaAPI.post(`/modules/contact-us/contact_us/`)
 }
 function modules_inventory_management_category_list(payload) {
   return silentseaAPI.get(`/modules/inventory-management/category/`)
@@ -394,6 +400,12 @@ function modules_terms_and_conditions_partial_update(payload) {
 function modules_terms_and_conditions_destroy(payload) {
   return silentseaAPI.delete(`/modules/terms-and-conditions/${payload.id}/`)
 }
+function modules_twofactorauth_send_otp_create(payload) {
+  return silentseaAPI.post(`/modules/twofactorauth/send-otp/`, payload)
+}
+function modules_twofactorauth_verify_delete_destroy(payload) {
+  return silentseaAPI.delete(`/modules/twofactorauth/verify-delete/`)
+}
 function patient_medical_records_list(payload) {
   return silentseaAPI.get(`/patient/medical_records/`)
 }
@@ -573,6 +585,7 @@ export const apiService = {
   api_v1_doctors_destroy,
   api_v1_doctors_favourite_create_2,
   api_v1_doctors_doctor_specialized_retrieve,
+  api_v1_doctors_favourite_retrieve,
   api_v1_doctors_favourite_create,
   api_v1_doctors_patient_count_retrieve,
   api_v1_edit_user_retrieve,
@@ -607,6 +620,7 @@ export const apiService = {
   api_v1_user_profiles_profile_retrieve,
   api_v1_user_profiles_profile_completion_retrieve,
   api_v1_user_profiles_update_profile_create,
+  modules_contact_us_contact_us_create,
   modules_inventory_management_category_list,
   modules_inventory_management_category_create,
   modules_inventory_management_category_retrieve,
@@ -659,6 +673,8 @@ export const apiService = {
   modules_terms_and_conditions_update,
   modules_terms_and_conditions_partial_update,
   modules_terms_and_conditions_destroy,
+  modules_twofactorauth_send_otp_create,
+  modules_twofactorauth_verify_delete_destroy,
   patient_medical_records_list,
   patient_medical_records_create,
   patient_medical_records_retrieve,
