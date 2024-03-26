@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from datetime import datetime
+from django.db.models import Case, When, Value, IntegerField
 
 
 from home.api.v1.serializers import (
@@ -36,6 +37,16 @@ from home.api.v1.serializers import (
 
 
 class SignupViewSet(ModelViewSet):
+    """
+    A viewset for handling user sign up requests.
+
+    This viewset allows users to sign up by sending a POST request with their
+    registration details. The `SignupSerializer` is used to validate and
+    process the incoming data.
+
+    Supported HTTP methods: POST
+    """
+
     serializer_class = SignupSerializer
     http_method_names = ["post"]
 
@@ -66,12 +77,47 @@ class LoginViewSet(ViewSet):
         return Response({"token": token.key, "user": user_serializer.data})
     
 class EditUserView(RetrieveUpdateAPIView, UpdateModelMixin):
+    """
+    A view for editing user information.
+
+    This view allows authenticated users to update their own user information.
+
+    Inherits from:
+        - RetrieveUpdateAPIView: Provides the default implementation for retrieving and updating a model instance.
+        - UpdateModelMixin: Provides the default implementation for updating a model instance.
+
+    Attributes:
+        authentication_classes (list): A list of authentication classes applied to the view.
+        permission_classes (list): A list of permission classes applied to the view.
+        queryset (QuerySet): The queryset used for retrieving the user instance.
+        serializer_class (Serializer): The serializer class used for serializing and deserializing user data.
+
+    Methods:
+        update(request, *args, **kwargs): Updates the user instance with the provided data.
+
+    """
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = EditUserSerializer
 
     def update(self, request, *args, **kwargs):
+        """
+        Updates the user instance with the provided data.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: The HTTP response object containing the serialized user data.
+
+        Raises:
+            ValidationError: If the provided data is invalid.
+
+        """
         instance = self.get_object()
         
         # Check if the user is authenticated
@@ -84,6 +130,29 @@ class EditUserView(RetrieveUpdateAPIView, UpdateModelMixin):
         return Response(serializer.data)
     
 class UserProfilePicUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
+    """
+    View for updating the user profile picture.
+
+    This view allows authenticated users to update their profile picture.
+    The user must be authenticated and provide a valid image file in the request data.
+
+    Inherits from:
+        - RetrieveUpdateAPIView: Provides the default implementation for retrieving and updating a model instance.
+        - UpdateModelMixin: Provides the default implementation for updating a model instance.
+
+    Attributes:
+        authentication_classes (list): The authentication classes required for this view.
+        permission_classes (list): The permission classes required for this view.
+        queryset (QuerySet): The queryset used to retrieve the user instance.
+        serializer_class (Serializer): The serializer class used for serializing and deserializing the user instance.
+        parser_classes (tuple): The parser classes used for parsing the request data.
+
+    Methods:
+        get_object: Retrieves the user instance.
+        update: Updates the user instance with the provided data.
+
+    """
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
@@ -91,9 +160,28 @@ class UserProfilePicUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
     parser_classes = (MultiPartParser, FormParser,)
 
     def get_object(self):
+        """
+        Retrieves the user instance.
+
+        Returns:
+            User: The user instance.
+
+        """
         return self.request.user
     
     def update(self, request, *args, **kwargs):
+        """
+        Updates the user instance with the provided data.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: The HTTP response object containing the serialized user data.
+
+        """
         instance = self.get_object()
         
         # Check if the user is authenticated
@@ -106,19 +194,63 @@ class UserProfilePicUpdateView(RetrieveUpdateAPIView, UpdateModelMixin):
         return Response(serializer.data)
     
 class FeedbackViewSet(ModelViewSet):
+    """
+    A viewset for handling feedback related operations.
+
+    Inherits from ModelViewSet, which provides default CRUD operations.
+
+    Attributes:
+        queryset (QuerySet): The queryset of Feedback objects.
+        serializer_class (Serializer): The serializer class for Feedback objects.
+        permission_classes (list): The list of permission classes for the viewset.
+
+    Methods:
+        perform_create(serializer): Overrides the default perform_create method to save the user with the feedback.
+    """
+
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        """
+        Overrides the default perform_create method to save the user with the feedback.
+
+        Args:
+            serializer (Serializer): The serializer instance for the feedback object.
+
+        Returns:
+            None
+        """
         serializer.save(user=self.request.user)
 
 class AppointmentViewSet(ModelViewSet):
+    """
+    A viewset for managing appointments.
+
+    This viewset provides the following actions:
+    - create: Create a new appointment.
+    - retrieve: Retrieve a specific appointment by ID.
+    - list: List all appointments.
+    - update_feedback: Update the feedback and ratings for an appointment.
+    - todo_appointments: Get the list of appointments for a specific user on the current day.
+    """
+
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
+        """
+        Create a new appointment.
+
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - If the appointment is created successfully, returns the serialized appointment data with HTTP status 201.
+        - If the appointment data is invalid, returns the validation errors with HTTP status 400.
+        """
         serializer = AppointmentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -126,17 +258,48 @@ class AppointmentViewSet(ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def retrieve(self, request, pk=None):
+        """
+        Retrieve a specific appointment by ID.
+
+        Parameters:
+        - request: The HTTP request object.
+        - pk: The ID of the appointment to retrieve.
+
+        Returns:
+        - If the appointment exists, returns the serialized appointment data with HTTP status 200.
+        - If the appointment does not exist, returns an error message with HTTP status 404.
+        """
         appointment = self.get_object()
         serializer = AppointmentSerializer(appointment)
         return Response(serializer.data)
 
     def list(self, request):
+        """
+        List all appointments.
+
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - Returns the serialized data of all appointments with HTTP status 200.
+        """
         queryset = self.get_queryset()
         serializer = AppointmentSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['patch'])
     def update_feedback(self, request):
+        """
+        Update the feedback and ratings for an appointment.
+
+        Parameters:
+        - request: The HTTP request object.
+
+        Returns:
+        - If the appointment is updated successfully, returns the serialized appointment data with HTTP status 200.
+        - If any required fields are missing, returns an error message with HTTP status 400.
+        - If the appointment does not exist, returns an error message with HTTP status 404.
+        """
         data = request.data
         user_id = data.get('user')
         doctor_id = data.get('doctor')
@@ -163,6 +326,16 @@ class AppointmentViewSet(ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def todo_appointments(self, request, user_id=None):
+        """
+        Get the list of appointments for a specific user on the current day.
+
+        Parameters:
+        - request: The HTTP request object.
+        - user_id: The ID of the user.
+
+        Returns:
+        - Returns the serialized data of the appointments for the user on the current day with HTTP status 200.
+        """
         today = datetime.now().date()
         today_appointments = Appointment.objects.filter(user=user_id, date=today)
         serializer = AppointmentSerializer(today_appointments, many=True)
@@ -170,21 +343,61 @@ class AppointmentViewSet(ModelViewSet):
 
 
 class UserProfileViewSet(ModelViewSet):
+    """
+    A viewset for managing user profiles.
+
+    This viewset provides the following actions:
+    - `list`: Returns a list of all user profiles.
+    - `retrieve`: Retrieves a specific user profile by ID.
+    - `create`: Creates a new user profile.
+    - `update`: Updates an existing user profile.
+    - `partial_update`: Partially updates an existing user profile.
+    - `destroy`: Deletes a user profile.
+
+    Additionally, it provides the following custom actions:
+    - `profile`: Retrieves the profile of the currently authenticated user.
+    - `update_profile`: Updates the profile of the currently authenticated user.
+    - `profile_completion`: Retrieves the profile completion status of the currently authenticated user.
+
+    Note: Only authenticated users can perform these actions.
+    """
+
     queryset = UserProfile.objects.all()
     serializer_class = UserProListSerializer
 
     def get_queryset(self):
+        """
+        Returns the queryset of user profiles filtered by the currently authenticated user.
+
+        Returns:
+            QuerySet: The filtered queryset of user profiles.
+        """
         user = self.request.user
         return UserProfile.objects.filter(user=user)
 
     @action(detail=False, methods=['get'])
     def profile(self, request):
+        """
+        Retrieves the profile of the currently authenticated user.
+
+        Returns:
+            Response: The serialized profile data.
+        """
         user_profile = self.get_queryset().first()
         serializer = self.get_serializer(user_profile)
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'])
     def update_profile(self, request):
+        """
+        Updates the profile of the currently authenticated user.
+
+        Args:
+            request (Request): The HTTP request object.
+
+        Returns:
+            Response: The serialized profile data.
+        """
         user_profile = self.get_queryset().first()
         serializer = self.get_serializer(user_profile, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -193,6 +406,12 @@ class UserProfileViewSet(ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def profile_completion(self, request):
+        """
+        Retrieves the profile completion status of the currently authenticated user.
+
+        Returns:
+            Response: The serialized profile completion data.
+        """
         user_profile = self.get_queryset().first()
         if user_profile.user_type == UserProfile.UserType.PATIENT:
             serializer_class = PatientProfileCompletionSerializer
@@ -206,6 +425,9 @@ class UserProfileViewSet(ModelViewSet):
         return Response(serializer.data)
 
 class DoctorViewSet(ModelViewSet):
+    """
+    A viewset for managing Doctor objects.
+    """
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
 
@@ -216,10 +438,6 @@ class DoctorViewSet(ModelViewSet):
 
     # Pagination
     pagination_class = LimitOffsetPagination
-
-    # def filter_queryset(self, queryset):
-    #     user = self.request.user
-    #     return queryset.filter(like_doctor_doctor__isnull=False).order_by('-like_doctor_doctor__favourite')
     
     @action(detail=False, methods=['get'])
     def patient_count(self, request):
@@ -242,38 +460,53 @@ class DoctorViewSet(ModelViewSet):
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['POST'])
+    @action(detail=False, methods=['get', 'post'])
     def favourite(self, request, pk=None):
         user = request.user
-        doctor = get_object_or_404(Doctor, pk=pk)
-        favourite = request.data.get('favourite')
-
-        # Ensure favourite is provided
-        if favourite is None:
-            return Response({'error': 'Favourite parameter is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if the favourite is valid
-        if favourite not in ['0', '1']:
-            return Response({'error': 'Invalid favourite parameter. Use "0" for unfavourite or "1" for favourite.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if the user has already performed the same action on the doctor
-        existing_like = LikeDoctor.objects.filter(doctor=doctor, user=user).first()
-        if existing_like and existing_like.favourite == favourite:
-            action_text = 'favourite' if favourite == '1' else 'unfavourite'
-            return Response({'error': f'Doctor {doctor.user.username} is already added in your {action_text} list.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Create or update the LikeDoctor object based on the action
-        if existing_like:
-            existing_like.favourite = favourite
-            existing_like.save()
-        else:
+        if request.method == 'GET':
+            # Handle GET request for listing favourite doctors
+            favorite_doctors = Doctor.objects.filter(like_doctor_doctor__user=user, like_doctor_doctor__favourite='1').annotate(
+            favourite_order=Value(0, output_field=IntegerField())
+            )
+            # Get non-favorite doctors with annotation for ordering
+            non_favorite_doctors = Doctor.objects.exclude(like_doctor_doctor__user=user, like_doctor_doctor__favourite='1').annotate(
+                favourite_order=Value(1, output_field=IntegerField())
+            )
+            # Concatenate favorite and non-favorite doctors and order by the annotated field
+            all_doctors = favorite_doctors.union(non_favorite_doctors).order_by('favourite_order', '-last_updated_date')
+            serializer = self.get_serializer(all_doctors, many=True)
+            return Response(serializer.data)
+       
+        elif request.method == 'POST':
+            # Handle POST request for adding doctor to favourites
+            doctor_id = request.data.get('doctor_id')
+            favourite = request.data.get('favourite')
+ 
+            # Ensure favourite and doctor_id are provided
+            if not (favourite and doctor_id):
+                return Response({'error': 'Both favourite and doctor_id parameters are required.'}, status=status.HTTP_400_BAD_REQUEST)
+ 
+            # Ensure favourite is provided and is '1' (favorite)
+            if favourite != '1':
+                return Response({'error': 'Invalid favourite parameter. Use "1" for favourite.'}, status=status.HTTP_400_BAD_REQUEST)
+           
+            # Get the doctor based on the doctor_id sent in the request data
+            doctor = get_object_or_404(Doctor, pk=doctor_id)
+       
+            # Check if the user has already favourited the doctor
+            existing_like = LikeDoctor.objects.filter(doctor=doctor, user=user, favourite='1').first()
+            if existing_like:
+                return Response({'error': f'Doctor {doctor.user.username} is already added to your favourite list.'}, status=status.HTTP_400_BAD_REQUEST)
+           
+            # Create the LikeDoctor object
             LikeDoctor.objects.create(doctor=doctor, user=user, favourite=favourite)
-        
-        action_text = 'favourite' if favourite == '1' else 'unfavourite'
-        return Response({'detail': f'Doctor {doctor.user.username} added to your {action_text} list.'}, status=status.HTTP_200_OK)
+            return Response({'detail': f'Doctor {doctor.user.username} added to your favourite list.'}, status=status.HTTP_200_OK)
 
     
 class SendPasswordResetEmailView(APIView):
+    """
+        A view for sending password reset emails to users.
+    """
     def post(self, request, format=None):
         serializer=SendPasswordResetEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -281,6 +514,9 @@ class SendPasswordResetEmailView(APIView):
     
 
 class ChangePasswordView(APIView):
+    """
+    A view for changing the password of a user.
+    """
     permission_classes = [IsAuthenticated]
  
     def post(self, request):
@@ -302,12 +538,35 @@ class ChangePasswordView(APIView):
             return Response(data=response_data, status=status.HTTP_400_BAD_REQUEST)
         
 class ToDoListViewSet(ModelViewSet):
+    """
+    A viewset for managing ToDoList objects.
+
+    This viewset provides CRUD operations for ToDoList objects,
+    as well as a custom action to delete completed tasks.
+
+    Attributes:
+        queryset (QuerySet): The queryset of ToDoList objects.
+        serializer_class (Serializer): The serializer class for ToDoList objects.
+        permission_classes (list): The list of permission classes for this viewset.
+    """
+
     queryset = ToDoList.objects.all()
     serializer_class = ToDOListSerializer
     permission_classes = [IsAuthenticated]
  
     @action(detail=False, methods=['delete'])
     def delete_completed(self, request):
+        """
+        Custom action to delete completed tasks.
+
+        This action deletes all the completed tasks from the database.
+
+        Args:
+            request (Request): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response object with status code 204 (No Content).
+        """
         completed_tasks = ToDoList.objects.filter(completed=True)
         completed_tasks.delete()
         return Response(status=204)

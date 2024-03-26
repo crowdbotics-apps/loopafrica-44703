@@ -1,14 +1,12 @@
-import pyotp
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from django.conf import settings
 from .models import TwoFactorAuth, Verify
 from .serializers import PhoneNumberSerializer, VerifySerializer
 import os
-import random
+import random   
 from .utils import Util
 
 def generate_otp():
@@ -54,7 +52,8 @@ class PhoneNumberViewset(ModelViewSet):
                         return Response({'message': "Error sending verification code", 'status': status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except:
                 return Response({'message': "Your Email is not registered", 'status': status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
-
+        
+        return Response({'message': "Email is required", 'status': status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
 
 class VerifyViewSet(ModelViewSet):
     queryset = Verify.objects.all()

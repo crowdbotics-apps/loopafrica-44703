@@ -59,6 +59,13 @@ class User(AbstractUser):
         super(User, self).save(*args, **kwargs)
 
 class UserProfile(models.Model):
+    """
+    Represents a user profile in the system.
+
+    Attributes:
+        user (User): The associated user for this profile.
+        user_type (str): The type of user, chosen from a predefined set of choices.
+    """
     class UserType(models.TextChoices):
         PATIENT = 'patient', _('Patient')
         HEALTHCARE_PROVIDER = 'healthcare_provider', _('Healthcare Provider')
@@ -82,6 +89,10 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 class PatientInfo(models.Model):
+    """
+    Model representing patient information.
+    """
+
     AGE_CHOICES = [
         ('18-29', '18-29'),
         ('30-39', '30-39'),
@@ -140,6 +151,25 @@ class PatientInfo(models.Model):
         return f"Patient Info for {self.user.username}"
     
 class Doctor(models.Model):
+    """
+    Represents a doctor in the system.
+
+    Attributes:
+        user (User): The user associated with the doctor.
+        doctor_id (UUID): The unique identifier for the doctor.
+        age (int): The age of the doctor.
+        address (str): The address of the doctor.
+        about_doctor (str): Information about the doctor.
+        specialized (str): The specialization of the doctor.
+        qualification (str): The qualification of the doctor.
+        available_time (Time): The available time of the doctor.
+        working_days (str): The working days of the doctor.
+        working_hours (str): The working hours of the doctor.
+        experience (int): The experience of the doctor.
+        last_updated_date (DateTime): The date and time when the doctor's information was last updated.
+        last_updated_by (User): The user who last updated the doctor's information.
+    """
+
     SPECIALIZED_CHOICES = [
         # ("dietician", "dietician"),
         # ("general_medicine_practitioner", "General Medicine Practitioner"),
@@ -150,6 +180,7 @@ class Doctor(models.Model):
         ("ob_gyn", "OB-GYN"),
         ("pt", "Physical Therapy"),
     ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor', null=True, blank=True)
     doctor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     age = models.IntegerField(null=True, blank=True)
@@ -168,6 +199,10 @@ class Doctor(models.Model):
         return f"Doctor Info for {self.user.username}"
 
 class Instructor(models.Model):
+    """
+    Represents an instructor in the system.
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='instructor')
     instructor_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     age = models.IntegerField(null=True, blank=True)
@@ -176,7 +211,7 @@ class Instructor(models.Model):
     specialized = models.TextField(null=True, blank=True)
     qualification = models.CharField(_("qualification"), blank=True, null=True, max_length=255)
     last_updated_date = models.DateTimeField(auto_now=True)
-    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='instructor_last_updated_by')    
+    last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='instructor_last_updated_by')
 
 class other_user(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='other_user')
@@ -188,6 +223,10 @@ class other_user(models.Model):
     last_updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='other_last_updated_by')
 
 class Feedback(models.Model):
+    """
+    Model representing user feedback.
+    """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback_user')    
     subject = models.CharField(max_length=255)
     message = models.TextField()
@@ -201,6 +240,24 @@ class Feedback(models.Model):
         return f"Feedback from {self.user.username}"
 
 class Appointment(models.Model):
+    """
+    Represents an appointment made by a user with a doctor.
+
+    Attributes:
+        doctor (Doctor): The doctor associated with the appointment.
+        user (User): The user who made the appointment.
+        date (DateField): The date of the appointment.
+        consult_time (TimeField): The time of the appointment.
+        created_at (DateTimeField): The date and time when the appointment was created.
+        doctor_queries (TextField): Queries or questions from the doctor.
+        health_issue (TextField): Description of the health issue.
+        feedback (TextField): Feedback provided by the user after the appointment.
+        ratings (IntegerField): Ratings given by the user for the appointment.
+        status (CharField): The status of the appointment.
+        last_updated_date (DateTimeField): The date and time when the appointment was last updated.
+        last_updated_by (User): The user who last updated the appointment.
+    """
+
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_appointment', null=True, blank=True)
     date = models.DateField(null=True, blank=True)
@@ -218,6 +275,26 @@ class Appointment(models.Model):
         return f"Appointment for {self.user.username} with {self.doctor.user.username}"
  
 class Vitals(models.Model):
+    """
+    Represents the vital signs and health measurements of a patient.
+
+    Attributes:
+        user (User): The user associated with the vitals.
+        patient (PatientInfo): The patient associated with the vitals.
+        heart_rate (int): The heart rate in beats per minute.
+        blood_status (str): The blood pressure status (e.g., normal, high, low).
+        blood_count (int): The blood count.
+        glucose_level (Decimal): The glucose level in mg/dL.
+        weight (Decimal): The weight in kilograms.
+        temperature (Decimal): The temperature in Celsius.
+        pulse (int): The pulse count.
+        date (Date): The date of the vitals.
+        created_at (DateTime): The date and time when the vitals were created.
+        updated_at (DateTime): The date and time when the vitals were last updated.
+        last_updated_by (User): The user who last updated the vitals.
+        last_updated_at (DateTime): The date and time when the vitals were last updated.
+    """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='user_vitals')
     patient = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='patient_vitals', null=True, blank=True)
     heart_rate = models.IntegerField(null=True, blank=True)  # Heart rate in beats per minute
@@ -237,6 +314,19 @@ class Vitals(models.Model):
         return f"Vitals of {self.patient_info.user.username} on {self.date}"
     
 class ToDoList(models.Model):
+    """
+    Represents a to-do list item.
+
+    Attributes:
+        title (str): The title of the to-do item.
+        notes (str): Additional notes for the to-do item.
+        completed (bool): Indicates whether the to-do item is completed or not.
+        created_at (datetime): The date and time when the to-do item was created.
+        updated_at (datetime): The date and time when the to-do item was last updated.
+        created_by (User): The user who created the to-do item.
+        updated_by (User): The user who last updated the to-do item.
+    """
+
     title = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     completed = models.BooleanField(default=False)
@@ -249,6 +339,10 @@ class ToDoList(models.Model):
         return self.title
     
 class LikeDoctor(models.Model):
+    """
+    Represents a user's like or dislike for a doctor.
+    """
+
     FAVOURITE_CHOICES = [
         ("1", "Like"),
         ("0", "Dislike"),

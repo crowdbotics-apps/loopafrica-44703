@@ -36,6 +36,17 @@ env.read_env(env_file)
 User = get_user_model()
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the UserProfile model.
+
+    This serializer is used to convert the UserProfile model instances into JSON
+    representation and vice versa. It specifies the fields that should be included
+    in the serialized output.
+
+    Attributes:
+        model (UserProfile): The UserProfile model class.
+        fields (list): The list of fields to be included in the serialized output.
+    """
     class Meta:
         model = UserProfile
         fields = ['user_type']
@@ -124,26 +135,50 @@ class DoctorListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = ['age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience' ]
+    
 
 class DoctorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    #favourite = serializers.SerializerMethodField()
+    favourite = serializers.SerializerMethodField()
  
     class Meta:
         model = Doctor
-        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience']
+        fields = ['user', 'id', 'age', 'address', 'about_doctor', 'specialized', 'qualification', 'available_time', 'working_days', 'working_hours', 'experience', 'favourite']
    
-    # def get_favourite(self, obj):
-    #     user = self.context['request'].user
- 
-    #     # Check if the user is authenticated
-    #     if user.is_authenticated:
-    #         # Get the user's most recent action on the doctor
-    #         recent_action = obj.like_doctor_doctor.filter(user=user).order_by('-id').first()
-    #         return recent_action.favourite if recent_action else 0
-    #     return 0
+    def get_favourite(self, obj):
+        # Assuming obj is a Doctor instance, retrieve its favourite status
+        #like_doctor = LikeDoctor.objects.filter(doctor=obj, user=user).first()
+        like_doctor = LikeDoctor.objects.filter(doctor=obj).first()
+        if like_doctor:
+            return like_doctor.favourite
+        return None
 
 class SignupSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for user signup.
+
+    This serializer is used to validate and create a new user during the signup process.
+    It includes fields for user information such as name, email, password, and additional profile information.
+
+    Attributes:
+        confirm_password (CharField): Field for confirming the password during signup.
+        profile (UserProfileSerializer): Serializer for user profile information.
+        patient_info (PatientInfoSerializer): Serializer for patient information.
+        doctor_info (DoctorSerializer): Serializer for doctor information.
+        instructor_info (InstructorSerializer): Serializer for instructor information.
+
+    Meta:
+        model (User): The User model to be used for creating a new user.
+        fields (tuple): The fields to include in the serializer.
+        extra_kwargs (dict): Additional keyword arguments for specific fields.
+
+    Methods:
+        validate_email: Custom validation method for the email field.
+        validate: Custom validation method for the serializer as a whole.
+        create: Method for creating a new user based on the validated data.
+        _get_request: Internal method for getting the request object from the serializer context.
+        save: Method for saving the serializer instance.
+    """
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
     profile = UserProfileSerializer()
     patient_info = PatientInfoSerializer(required=False)
@@ -168,6 +203,20 @@ class SignupSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, email):
+        """
+        Custom validation method for the email field.
+
+        This method checks if the email is unique and raises a validation error if it is already registered.
+
+        Args:
+            email (str): The email address to validate.
+
+        Returns:
+            str: The validated email address.
+
+        Raises:
+            serializers.ValidationError: If a user is already registered with the provided email address.
+        """
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
@@ -175,6 +224,20 @@ class SignupSerializer(serializers.ModelSerializer):
         return email
 
     def validate(self, attrs):
+        """
+        Custom validation method for the serializer as a whole.
+
+        This method checks if the password and confirm_password fields match.
+
+        Args:
+            attrs (dict): The validated data for the serializer.
+
+        Returns:
+            dict: The validated data.
+
+        Raises:
+            serializers.ValidationError: If the password and confirm_password fields don't match.
+        """
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
         if password != confirm_password:
@@ -182,6 +245,18 @@ class SignupSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        """
+        Method for creating a new user based on the validated data.
+
+        This method creates a new User instance with the provided data and saves it to the database.
+        It also creates related profile, patient info, doctor info, and instructor info if provided.
+
+        Args:
+            validated_data (dict): The validated data for creating the user.
+
+        Returns:
+            User: The created user instance.
+        """
         user_profile_data = validated_data.pop('profile', None)
         patient_info_data = validated_data.pop('patient_info', None)
         doctor_info_data = validated_data.pop('doctor_info', None)
@@ -223,19 +298,30 @@ class SignupSerializer(serializers.ModelSerializer):
         return user
 
     def _get_request(self):
+        """
+        Internal method for getting the request object from the serializer context.
+
+        Returns:
+            HttpRequest: The request object.
+        """
         request = self.context.get('request')
         if request and not isinstance(request, HttpRequest) and hasattr(request, '_request'):
             request = request._request
         return request
 
     def save(self, request=None):
-        """rest_auth passes request so we must override to accept it"""
-        return super().save()
+        """
+        Method for saving the serializer instance.
 
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['profile_picture'] = instance.profile.profile_picture.url if instance.profile.profile_picture else None
-    #     return representation
+        This method overrides the default save method to accept the request object.
+
+        Args:
+            request (HttpRequest, optional): The request object. Defaults to None.
+
+        Returns:
+            Any: The saved instance.
+        """
+        return super().save()
 
 class AuthTokenByEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -325,6 +411,27 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
 
 class EditUserSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for updating user information.
+
+    This serializer is used to update the fields of a User model instance, along with related models such as UserProfile,
+    PatientInfo, Doctor, and Instructor.
+
+    Attributes:
+        profile (UserProfileSerializer): Serializer for the UserProfile model.
+        patient_info (PatientInfoSerializer): Serializer for the PatientInfo model.
+        doctor_info (DoctorListSerializer): Serializer for the Doctor model.
+        instructor_info (InstructorSerializer): Serializer for the Instructor model.
+
+    Meta:
+        model (User): The User model class.
+        fields (tuple): The fields to be included in the serialized representation.
+
+    Methods:
+        update(instance, validated_data): Updates the user instance with the provided validated data.
+
+    """
+
     profile = UserProfileSerializer()
     patient_info = PatientInfoSerializer(required=False)
     doctor_info = DoctorListSerializer(required=False)
@@ -335,6 +442,18 @@ class EditUserSerializer(serializers.ModelSerializer):
         fields = ('name', "full_name", "first_name", 'last_name', 'email', 'gender', 'phone_number', 'dob', 'profile', 'patient_info', 'doctor_info', 'instructor_info')
    
     def update(self, instance, validated_data):
+        """
+        Updates the user instance with the provided validated data.
+
+        Args:
+            instance (User): The User model instance to be updated.
+            validated_data (dict): The validated data containing the updated field values.
+
+        Returns:
+            User: The updated User model instance.
+
+        """
+
         profile_data = validated_data.pop('profile', None)
         patient_info_data = validated_data.pop('patient_info', None)
         doctor_info_data = validated_data.pop('doctor_info', None)
@@ -492,15 +611,27 @@ class UserProListSerializer(serializers.ModelSerializer):
         return None
 
 class PatientProfileCompletionSerializer(serializers.ModelSerializer):
-    #user = UserSerializer()
+    """
+    Serializer class for calculating the completion percentage of a patient's profile.
+    """
     user_id = serializers.IntegerField(source='user.id')
     user_name = serializers.CharField(source='user.name')
     patient_profile_completion = serializers.SerializerMethodField()
+    
     class Meta:
         model = UserProfile
-        fields = ['user_id','user_name', 'user_type', 'patient_profile_completion']
+        fields = ['user_id', 'user_name', 'user_type', 'patient_profile_completion']
     
     def get_patient_profile_completion(self, obj):
+        """
+        Method to calculate the completion percentage of a patient's profile.
+        
+        Args:
+            obj: The instance of the UserProfile model.
+        
+        Returns:
+            The completion percentage of the patient's profile as a float value.
+        """
         patient_info = PatientInfo.objects.filter(user=obj.user).first()
         
         if patient_info:
@@ -551,14 +682,28 @@ class PatientProfileCompletionSerializer(serializers.ModelSerializer):
         return 0  # Profile Not Available
 
 class DoctorProfileCompletionSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for calculating the profile completion percentage of a doctor's profile.
+    """
+
     user_id = serializers.IntegerField(source='user.id')
     user_name = serializers.CharField(source='user.name')
     doctor_profile_completion = serializers.SerializerMethodField()
+
     class Meta:
         model = UserProfile
-        fields = ['user_id','user_name', 'user_type', 'doctor_profile_completion']
+        fields = ['user_id', 'user_name', 'user_type', 'doctor_profile_completion']
 
     def get_doctor_profile_completion(self, obj):
+        """
+        Calculates the profile completion percentage of a doctor's profile.
+
+        Args:
+            obj: The instance of the UserProfile model.
+
+        Returns:
+            The profile completion percentage as a float value.
+        """
         doctor_info = Doctor.objects.filter(user=obj.user).first()
         if doctor_info:
             # Define required fields for profile completion
@@ -582,24 +727,31 @@ class DoctorProfileCompletionSerializer(serializers.ModelSerializer):
                 doctor_info.experience,
             ]
 
-        # Count how many fields are filled
+            # Count how many fields are filled
             filled_fields = sum(field is not None for field in required_fields)
-            
+
             # Calculate the percentage of completion
             total_fields = len(required_fields)
             completion_percentage = (filled_fields / total_fields) * 100
-            
+
             completion_percentage = round(completion_percentage, 2)
 
             return completion_percentage
         return 0  # Profile Not Available
     
 class ToDOListSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for ToDOList model.
+    """
     class Meta:
         model = ToDoList
         fields = '__all__'
 
 class LikeDoctorSerializer(serializers.ModelSerializer):
+    """
+    Serializer class for LikeDoctor model.
+    """
     class Meta:
         model = LikeDoctor
         fields = "__all__"
+        
